@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>高尿酸专属 · 饮食补剂管理合集</title>
+  <link rel="stylesheet" href="common.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <span class="header-title">饮食补剂管理</span>
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="切换深色/浅色模式">
+        <span class="icon-sun" aria-hidden="true">☀️</span>
+        <span class="icon-moon" aria-hidden="true">🌙</span>
+      </button>
+    </header>
+
+    <h1>高尿酸专属 · 饮食补剂管理合集</h1>
+    <p class="subtitle">每日饮食与补剂执行方案 · 一周餐单 · 采购清单 · 锻炼计划</p>
+
+    <nav class="toc">
+      <h2>目录</h2>
+      <ol>
+        <li><a href="section1.html">每日饮食与补剂执行方案（高尿酸专属版）</a></li>
+        <li><a href="section2.html">一周每日饮食清单</a></li>
+        <li><a href="section3.html">饮食补剂采购清单</a></li>
+        <li><a href="section4.html">锻炼计划</a></li>
+      </ol>
+    </nav>
+  </div>
+
+  <script>
+    (function() {
+      var KEY = 'fit-theme';
+      var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+      function getPreferred() {
+        var saved = localStorage.getItem(KEY);
+        if (saved === 'dark' || saved === 'light') return saved;
+        return darkQuery.matches ? 'dark' : 'light';
+      }
+
+      function apply(theme) {
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        localStorage.setItem(KEY, theme);
+      }
+
+      document.getElementById('themeToggle').addEventListener('click', function() {
+        var next = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+        apply(next);
+      });
+
+      apply(getPreferred());
+      darkQuery.addEventListener('change', function() {
+        if (!localStorage.getItem(KEY)) apply(getPreferred());
+      });
+    })();
+  </script>
+</body>
+</html>
