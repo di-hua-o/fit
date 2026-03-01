@@ -34,8 +34,10 @@ html.dark {
 
 * { box-sizing: border-box; }
 
+/* 苹果风格背景图：饮食/健康主题 */
 body {
   margin: 0;
+  position: relative;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", sans-serif;
   background: var(--bg);
   color: var(--text);
@@ -43,6 +45,35 @@ body {
   font-size: 17px;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-image: url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=1920');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: rgba(245, 245, 247, 0.88);
+  pointer-events: none;
+}
+
+html.dark body::after {
+  background: rgba(0, 0, 0, 0.82);
+}
+
+/* 锻炼计划页：运动风格背景 */
+body.page-exercise::before {
+  background-image: url('https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1920');
 }
 
 .header {
