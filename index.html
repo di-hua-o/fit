@@ -22,11 +22,31 @@
 
     <nav class="toc">
       <h2>目录</h2>
-      <ol>
-        <li><a href="section1.html">每日饮食与补剂执行方案（高尿酸专属版）</a></li>
-        <li><a href="section2.html">一周每日饮食清单</a></li>
-        <li><a href="section3.html">饮食补剂采购清单</a></li>
-        <li><a href="section4.html">锻炼计划</a></li>
+      <ol class="toc-list">
+        <li class="toc-item">
+          <a href="section1.html">每日饮食与补剂执行方案（高尿酸专属版）</a>
+          <div class="toc-preview" aria-hidden="true">
+            <iframe data-src="section1.html" title="预览：每日饮食与补剂执行方案" loading="lazy"></iframe>
+          </div>
+        </li>
+        <li class="toc-item">
+          <a href="section2.html">一周每日饮食清单</a>
+          <div class="toc-preview" aria-hidden="true">
+            <iframe data-src="section2.html" title="预览：一周每日饮食清单" loading="lazy"></iframe>
+          </div>
+        </li>
+        <li class="toc-item">
+          <a href="section3.html">饮食补剂采购清单</a>
+          <div class="toc-preview" aria-hidden="true">
+            <iframe data-src="section3.html" title="预览：饮食补剂采购清单" loading="lazy"></iframe>
+          </div>
+        </li>
+        <li class="toc-item">
+          <a href="section4.html">锻炼计划</a>
+          <div class="toc-preview" aria-hidden="true">
+            <iframe data-src="section4.html" title="预览：锻炼计划" loading="lazy"></iframe>
+          </div>
+        </li>
       </ol>
     </nav>
   </div>
@@ -55,6 +75,20 @@
       apply(getPreferred());
       darkQuery.addEventListener('change', function() {
         if (!localStorage.getItem(KEY)) apply(getPreferred());
+      });
+
+      // 目录预览：悬停时懒加载 iframe
+      document.querySelectorAll('.toc-preview iframe[data-src]').forEach(function(iframe) {
+        var parent = iframe.closest('.toc-item');
+        if (!parent) return;
+        var load = function() {
+          var src = iframe.getAttribute('data-src');
+          if (src && !iframe.src) {
+            iframe.src = src;
+            iframe.removeAttribute('data-src');
+          }
+        };
+        parent.addEventListener('mouseenter', load, { once: true });
       });
     })();
   </script>
