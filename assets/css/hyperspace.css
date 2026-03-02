@@ -81,6 +81,10 @@ body.page-weight::before {
   background-image: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1920');
 }
 
+body.page-calorie::before {
+  background-image: url('https://images.unsplash.com/photo-1546069901-d5bfd2cbfb1f?w=1920');
+}
+
 /* ========== 侧边栏 ========== */
 #sidebar {
   position: fixed;
@@ -441,6 +445,76 @@ section .section-desc {
   font-size: 0.9375rem;
   margin: 0;
   padding: 1.5rem 0;
+}
+
+.page-content .calorie-form,
+.page-content .calorie-day-select {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.page-content .calorie-form label,
+.page-content .calorie-day-select {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  color: var(--hyperspace-fg-muted);
+}
+
+.page-content .calorie-form input,
+.page-content .calorie-form select {
+  padding: 0.5rem 0.75rem;
+  background: var(--hyperspace-bg);
+  border: 1px solid var(--hyperspace-border);
+  border-radius: 0.375rem;
+  color: var(--hyperspace-fg);
+  font-size: 1rem;
+  min-width: 8rem;
+}
+
+.page-content .calorie-age-display {
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  color: var(--hyperspace-fg);
+  min-height: 1.25rem;
+  display: inline-block;
+}
+
+.page-content .calorie-birthdate-selects {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.page-content .calorie-birthdate-selects select {
+  padding: 0.5rem 0.75rem;
+  background: var(--hyperspace-bg);
+  border: 1px solid var(--hyperspace-border);
+  border-radius: 0.375rem;
+  color: var(--hyperspace-fg);
+  font-size: 1rem;
+  min-width: 5rem;
+}
+
+.page-content .calorie-day-select select {
+  padding: 0.5rem 0.75rem;
+  background: var(--hyperspace-bg);
+  border: 1px solid var(--hyperspace-border);
+  border-radius: 0.375rem;
+  color: var(--hyperspace-fg);
+  font-size: 1rem;
+  min-width: 8rem;
+}
+
+.page-content .calorie-result {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--hyperspace-fg-muted);
+  line-height: 1.6;
 }
 
 .page-content .back-link {
