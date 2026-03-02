@@ -3,63 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="color-scheme" content="light dark">
   <title>锻炼计划 · 饮食补剂管理</title>
-  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="assets/css/hyperspace.css">
 </head>
-<body class="page-exercise">
-  <div class="container">
-    <header class="header">
-      <span class="header-title"><a href="index.html">饮食补剂管理</a></span>
-      <button type="button" class="theme-toggle" id="themeToggle" aria-label="切换深色/浅色模式">
-        <span class="icon-sun" aria-hidden="true">☀️</span>
-        <span class="icon-moon" aria-hidden="true">🌙</span>
-      </button>
-    </header>
+<body>
+  <button type="button" id="sidebar-toggle" aria-label="打开菜单">☰</button>
 
-    <a href="index.html" class="back-link">← 返回目录</a>
+  <aside id="sidebar">
+    <div class="logo"><a href="index.html">饮食补剂管理</a></div>
+    <nav>
+      <ul>
+        <li><a href="index.html">首页</a></li>
+        <li><a href="section1.html">每日饮食与补剂</a></li>
+        <li><a href="section2.html">一周饮食清单</a></li>
+        <li><a href="section3.html">采购清单</a></li>
+        <li><a href="section4.html" class="active">锻炼计划</a></li>
+      </ul>
+    </nav>
+  </aside>
 
-    <section>
-      <h2>四、锻炼计划</h2>
+  <div id="wrapper">
+    <div class="inner">
+      <a href="index.html" class="back-link">← 返回目录</a>
+      <div class="page-content">
+        <h2>四、锻炼计划</h2>
 
-      <div class="card">
-        <h3>🏃 工作日（周一至周五）</h3>
-        <ul>
-          <li><strong>有氧训练</strong>：每周两次，每次 30 分钟</li>
-          <li><strong>方式</strong>：爬楼梯</li>
-        </ul>
+        <div class="card">
+          <h3>🏃 工作日（周一至周五）</h3>
+          <ul>
+            <li><strong>有氧训练</strong>：每周两次，每次 30 分钟</li>
+            <li><strong>方式</strong>：爬楼梯</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>💪 周末（周六、周日）</h3>
+          <ul>
+            <li><strong>有氧 + 无氧锻炼</strong>：每周两次</li>
+            <li><strong>详细计划</strong>：待补充</li>
+          </ul>
+        </div>
       </div>
-
-      <div class="card">
-        <h3>💪 周末（周六、周日）</h3>
-        <ul>
-          <li><strong>有氧 + 无氧锻炼</strong>：每周两次</li>
-          <li><strong>详细计划</strong>：待补充</li>
-        </ul>
-      </div>
-    </section>
+    </div>
   </div>
 
   <script>
     (function() {
-      var KEY = 'fit-theme';
-      var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      function getPreferred() {
-        var saved = localStorage.getItem(KEY);
-        if (saved === 'dark' || saved === 'light') return saved;
-        return darkQuery.matches ? 'dark' : 'light';
+      var sidebar = document.getElementById('sidebar');
+      var toggle = document.getElementById('sidebar-toggle');
+      if (toggle && sidebar) {
+        toggle.addEventListener('click', function() { sidebar.classList.toggle('open'); });
+        document.addEventListener('click', function(e) {
+          if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && !toggle.contains(e.target))
+            sidebar.classList.remove('open');
+        });
       }
-      function apply(theme) {
-        document.documentElement.classList.toggle('dark', theme === 'dark');
-        localStorage.setItem(KEY, theme);
-      }
-      document.getElementById('themeToggle').addEventListener('click', function() {
-        apply(document.documentElement.classList.contains('dark') ? 'light' : 'dark');
-      });
-      apply(getPreferred());
-      darkQuery.addEventListener('change', function() {
-        if (!localStorage.getItem(KEY)) apply(getPreferred());
-      });
     })();
   </script>
 </body>

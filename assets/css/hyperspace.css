@@ -1,0 +1,344 @@
+/* Hyperspace 风格 - 基于 HTML5 UP Hyperspace 模板 */
+/* https://html5up.net/hyperspace */
+
+:root {
+  --hyperspace-bg: #0c0c14;
+  --hyperspace-bg-alt: #16162a;
+  --hyperspace-fg: #e4e4e7;
+  --hyperspace-fg-muted: #a1a1aa;
+  --hyperspace-accent: #7c3aed;
+  --hyperspace-accent-hover: #8b5cf6;
+  --hyperspace-border: rgba(255, 255, 255, 0.08);
+  --hyperspace-sidebar-width: 18rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  background: var(--hyperspace-bg);
+  background-image: linear-gradient(180deg, #0c0c14 0%, #16162a 50%, #0c0c14 100%);
+  color: var(--hyperspace-fg);
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+/* ========== 侧边栏 ========== */
+#sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--hyperspace-sidebar-width);
+  height: 100vh;
+  background: var(--hyperspace-bg-alt);
+  border-right: 1px solid var(--hyperspace-border);
+  padding: 2rem 1.5rem;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+#sidebar .logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  letter-spacing: 0.05em;
+}
+
+#sidebar .logo a {
+  color: var(--hyperspace-fg);
+  text-decoration: none;
+}
+
+#sidebar nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#sidebar nav li {
+  margin-bottom: 0.25rem;
+}
+
+#sidebar nav a {
+  display: block;
+  padding: 0.5rem 0;
+  color: var(--hyperspace-fg-muted);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  transition: color 0.2s;
+}
+
+#sidebar nav a:hover {
+  color: var(--hyperspace-accent);
+}
+
+#sidebar nav a.active {
+  color: var(--hyperspace-accent);
+}
+
+/* 移动端侧边栏切换 */
+#sidebar-toggle {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 101;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--hyperspace-border);
+  background: var(--hyperspace-bg-alt);
+  color: var(--hyperspace-fg);
+  border-radius: 0.375rem;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+/* ========== 主内容区 ========== */
+#wrapper {
+  margin-left: var(--hyperspace-sidebar-width);
+  min-height: 100vh;
+}
+
+.inner {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+/* ========== Intro 区块 ========== */
+#intro {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+#intro h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+#intro p {
+  color: var(--hyperspace-fg-muted);
+  font-size: 1.125rem;
+  margin: 0 0 2rem;
+  max-width: 32rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ========== 区块通用 ========== */
+section.wrapper {
+  padding: 3rem 2rem;
+  border-top: 1px solid var(--hyperspace-border);
+}
+
+section.wrapper:first-of-type {
+  border-top: none;
+}
+
+section .section-head {
+  margin-bottom: 2rem;
+}
+
+section h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+section .section-desc {
+  color: var(--hyperspace-fg-muted);
+  font-size: 0.9375rem;
+  margin: 0;
+}
+
+/* 卡片网格（首页目录） */
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.feature-card {
+  background: var(--hyperspace-bg-alt);
+  border: 1px solid var(--hyperspace-border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.feature-card:hover {
+  border-color: var(--hyperspace-accent);
+  transform: translateY(-2px);
+}
+
+.feature-card h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.feature-card p {
+  color: var(--hyperspace-fg-muted);
+  font-size: 0.875rem;
+  margin: 0 0 1rem;
+  line-height: 1.5;
+}
+
+.feature-card .button {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: var(--hyperspace-accent);
+  color: #fff !important;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  transition: background 0.2s;
+}
+
+.feature-card .button:hover {
+  background: var(--hyperspace-accent-hover);
+}
+
+/* ========== 内容页（章节页）通用 ========== */
+.page-content h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--hyperspace-border);
+}
+
+.page-content .card {
+  background: var(--hyperspace-bg-alt);
+  border: 1px solid var(--hyperspace-border);
+  border-radius: 0.75rem;
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 1rem;
+}
+
+.page-content .card h3 {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem;
+}
+
+.page-content .card ul,
+.page-content .card ol {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--hyperspace-fg-muted);
+}
+
+.page-content .card li {
+  margin-bottom: 0.35rem;
+}
+
+.page-content .category-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.page-content .category-list li {
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--hyperspace-border);
+}
+
+.page-content .category-list li:last-child {
+  border-bottom: none;
+}
+
+.page-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.page-content th,
+.page-content td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--hyperspace-border);
+  color: var(--hyperspace-fg-muted);
+}
+
+.page-content th {
+  font-weight: 600;
+  color: var(--hyperspace-fg);
+}
+
+.page-content .day-card {
+  margin-bottom: 1.25rem;
+}
+
+.page-content .day-card h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.page-content .back-link {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  color: var(--hyperspace-accent);
+  text-decoration: none;
+  font-size: 0.9375rem;
+}
+
+.page-content .back-link:hover {
+  color: var(--hyperspace-accent-hover);
+  text-decoration: underline;
+}
+
+/* ========== 移动端 ========== */
+@media (max-width: 768px) {
+  #sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  #sidebar.open {
+    transform: translateX(0);
+  }
+
+  #sidebar-toggle {
+    display: flex;
+  }
+
+  #wrapper {
+    margin-left: 0;
+    padding-top: 4rem;
+  }
+
+  .inner {
+    padding: 2rem 1rem;
+  }
+
+  #intro {
+    padding: 2rem 1rem;
+  }
+
+  #intro h1 {
+    font-size: 1.75rem;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+  }
+}
