@@ -9,19 +9,21 @@
 ```
 fit/
 ├── README.md                 # 本说明
-├── index.html                # 首页（目录与模块入口）
-├── profile.html              # 我的信息（多用户、个人信息、CSV 导出/导入、体重 CSV 导入/导出）
-├── section1.html             # 每日饮食与补剂执行方案
-├── section2.html             # 一周每日饮食清单
-├── section3.html             # 采购清单
-├── section4.html             # 锻炼计划
-├── calendar.html             # 日历（按日查看饮食与训练）
-├── budget.html               # 开销统计
-├── weight.html               # 体重记录（身高、BMI、图表、导出 CSV）
-├── calorie.html              # 热量统计（BMR/TDEE、按餐单摄入、平衡）
 ├── all.md                    # 源文档（饮食补剂与锻炼内容）
-├── common.css                # 备用样式
 ├── weight-export.csv         # 示例/导出的体重 CSV（可删）
+│
+├── pages/                    # 所有 HTML 页面与备用样式
+│   ├── common.css            # 备用样式（苹果风格）
+│   ├── index.html            # 首页（目录与模块入口）
+│   ├── profile.html          # 我的信息
+│   ├── section1.html         # 每日饮食与补剂执行方案
+│   ├── section2.html         # 一周每日饮食清单
+│   ├── section3.html         # 采购清单
+│   ├── section4.html         # 锻炼计划
+│   ├── calendar.html         # 日历
+│   ├── budget.html           # 开销统计
+│   ├── weight.html           # 体重记录
+│   └── calorie.html          # 热量统计
 │
 ├── assets/
 │   ├── css/
@@ -56,7 +58,7 @@ fit/
 
 ## 快速开始
 
-用浏览器直接打开 **`index.html`**（或任意 `.html`），即可使用。体重、热量等数据保存在本机 localStorage，**多用户**在「我的信息」里切换。导出/导入：在「我的信息」点「下载 CSV」保存到本地，或点「从文件加载」选择之前导出的 CSV。
+用浏览器直接打开 **`pages/index.html`**（或任意 `pages/*.html`），即可使用。体重、热量等数据保存在本机 localStorage，**多用户**在「我的信息」里切换。导出/导入：在「我的信息」点「下载 CSV」保存到本地，或点「从文件加载」选择之前导出的 CSV。
 
 ---
 

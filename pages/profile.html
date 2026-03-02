@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的信息 · 饮食补剂管理</title>
+  <link rel="stylesheet" href="../assets/css/hyperspace.css">
+  <script src="../assets/js/fit-user.js"></script>
+  <script src="../assets/js/data-csv.js"></script>
+</head>
+<body class="page-profile">
+  <button type="button" id="sidebar-toggle" aria-label="打开菜单">☰</button>
+
+  <aside id="sidebar">
+    <div class="logo"><a href="index.html">饮食补剂管理</a></div>
+    <nav>
+      <ul>
+        <li><a href="profile.html" class="active">我的信息</a></li>
+        <li><a href="section1.html">每日饮食与补剂</a></li>
+        <li><a href="section2.html">一周饮食清单</a></li>
+        <li><a href="section3.html">采购清单</a></li>
+        <li><a href="section4.html">锻炼计划</a></li>
+        <li><a href="calendar.html">日历</a></li>
+        <li><a href="budget.html">开销统计</a></li>
+        <li><a href="weight.html">体重记录</a></li>
+        <li><a href="calorie.html">热量统计</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div id="wrapper">
+    <div class="inner">
+      <a href="index.html" class="back-link">← 返回目录</a>
+      <div class="page-content">
+        <h2>👤 我的信息</h2>
+        <p style="color: var(--hyperspace-fg-muted); font-size: 0.9375rem; margin-bottom: 1.5rem;">切换用户、填写个人信息后，体重与热量等页面会自动使用当前用户的数据。</p>
+
+        <div class="card">
+          <h3>当前用户</h3>
+          <p style="color: var(--hyperspace-fg-muted); font-size: 0.8125rem; margin-bottom: 0.75rem;">切换后，其他页面（体重记录、热量统计等）将自动显示该用户的数据。</p>
+          <div class="profile-current-user">
+            <label><span>选择用户</span><select id="currentUserSelect"></select></label>
+            <label><span>添加用户</span>
+              <span class="profile-add-user">
+                <input type="text" id="newUserName" maxlength="32" placeholder="新用户名">
+                <button type="button" id="btnAddUser" class="button">添加</button>
+              </span>
+            </label>
+          </div>
+          <p id="currentUserHint" style="color: var(--hyperspace-fg-muted); font-size: 0.8125rem; margin: 0.5rem 0 0;"></p>
+        </div>
+
+        <div class="card">
+          <h3>个人信息</h3>
+          <p style="color: var(--hyperspace-fg-muted); font-size: 0.8125rem; margin-bottom: 0.75rem;">在此填写后，体重记录、热量统计等页面会自动读取当前用户的数据。</p>
+          <div class="profile-personal-form">
+            <label><span>身高（cm）</span><input type="number" id="inputHeight" min="100" max="250" placeholder="如 175"></label>
+            <label><span>体重（kg）</span><input type="number" id="inputWeight" step="0.1" min="30" max="300" placeholder="如 70"></label>
+            <label><span>体重记录</span>
+              <span class="profile-weight-import">
+                <input type="file" id="inputWeightCsv" accept=".csv" style="display:none">
+                <button type="button" id="btnImportWeightCsv" class="button">导入 CSV</button>
+                <button type="button" id="btnExportWeightCsv" class="button">导出 CSV</button>
+              </span>
+            </label>
+            <p style="color: var(--hyperspace-fg-muted); font-size: 0.75rem; margin: -0.25rem 0 0;">CSV 格式：首行可为「日期,体重」或「date,weight」，日期 YYYY-MM-DD，体重为数字（kg）</p>
+            <label><span>出生日期</span>
+              <span class="calorie-birthdate-selects">
+                <select id="inputBirthYear"><option value="">年</option></select>
+                <select id="inputBirthMonth"><option value="">月</option></select>
+                <select id="inputBirthDay"><option value="">日</option></select>
+              </span>
+            </label>
+            <label><span>性别</span><select id="inputGender"><option value="male">男</option><option value="female">女</option></select></label>
+            <label><span>活动量</span>
+              <select id="inputActivity">
+                <option value="1.2">久坐（几乎不运动）</option>
+                <option value="1.375">轻度（每周 1～3 天）</option>
+                <option value="1.55" selected>中度（每周 3～5 天）</option>
+                <option value="1.725">高度（每周 6～7 天）</option>
+                <option value="1.9">极高（体力劳动/每天训练）</option>
+              </select>
+            </label>
+            <button type="button" id="btnSavePersonal" class="button">保存个人信息</button>
+          </div>
+          <p id="personalHint" style="color: var(--hyperspace-fg-muted); font-size: 0.8125rem; margin: 0.5rem 0 0;"></p>
+        </div>
+
+        <div class="card">
+          <h3>📁 导出 / 导入 CSV</h3>
+          <p style="color: var(--hyperspace-fg-muted); font-size: 0.8125rem; margin-bottom: 0.75rem;">将当前用户的个人信息与体重记录导出为 CSV 文件，或从本地 CSV 文件加载到当前用户（无需 server）。</p>
+          <div class="profile-cloud-form">
+            <input type="file" id="inputDataCsv" accept=".csv" style="display:none">
+            <div class="profile-cloud-buttons">
+              <button type="button" id="btnSaveCloud" class="button">下载 CSV</button>
+              <button type="button" id="btnLoadCloud" class="button">从文件加载</button>
+            </div>
+          </div>
+          <p id="cloudSyncHint" style="color: var(--hyperspace-fg-muted); font-size: 0.8125rem; margin: 0.5rem 0 0;"></p>
+        </div>
+
+        <div class="card">
+          <h3>信息汇总</h3>
+          <p style="color: var(--hyperspace-fg-muted); font-size: 0.8125rem; margin-bottom: 0.75rem;">以下数据来自「体重记录」「热量统计」等页面，在对应页面修改后会同步显示。</p>
+          <dl id="profileSummary" class="profile-summary"></dl>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var KEY_USERNAME = 'fit-username';
+      var KEY_HEIGHT = 'fit-height-cm';
+      var KEY_WEIGHT = 'fit-weight-records';
+      var KEY_WEIGHT_OVERRIDE = 'fit-calorie-weight-override';
+      var KEY_BIRTHDATE = 'fit-calorie-birthdate';
+      var KEY_AGE = 'fit-calorie-age';
+      var KEY_GENDER = 'fit-calorie-gender';
+      var KEY_ACTIVITY = 'fit-calorie-activity';
+
+      var ACTIVITY_LABELS = {
+        '1.2': '久坐（几乎不运动）',
+        '1.375': '轻度（每周 1～3 天）',
+        '1.55': '中度（每周 3～5 天）',
+        '1.725': '高度（每周 6～7 天）',
+        '1.9': '极高（体力劳动/每天训练）'
+      };
+
+      function getUsername() {
+        return (localStorage.getItem(KEY_USERNAME) || '').trim();
+      }
+      function getHeight() {
+        var h = localStorage.getItem(KEY_HEIGHT);
+        return h ? parseFloat(h, 10) : null;
+      }
+      function getLatestWeight() {
+        var override = localStorage.getItem(KEY_WEIGHT_OVERRIDE);
+        if (override) return parseFloat(override, 10);
+        try {
+          var raw = localStorage.getItem(KEY_WEIGHT);
+          var arr = raw ? JSON.parse(raw) : [];
+          if (arr.length === 0) return null;
+          arr.sort(function(a, b) { return b.date.localeCompare(a.date); });
+          return arr[0].weight;
+        } catch (e) { return null; }
+      }
+      function getBirthdate() {
+        return localStorage.getItem(KEY_BIRTHDATE) || null;
+      }
+      function getAge() {
+        var birth = localStorage.getItem(KEY_BIRTHDATE);
+        if (birth && birth.length >= 10) {
+          var b = new Date(birth.slice(0, 10));
+          if (!isNaN(b.getTime())) {
+            var today = new Date();
+            var age = today.getFullYear() - b.getFullYear();
+            if (today.getMonth() < b.getMonth() || (today.getMonth() === b.getMonth() && today.getDate() < b.getDate())) age--;
+            if (age >= 0 && age <= 120) return age;
+          }
+        }
+        var a = localStorage.getItem(KEY_AGE);
+        return a ? parseInt(a, 10) : null;
+      }
+      function getGender() {
+        var g = localStorage.getItem(KEY_GENDER) || 'male';
+        return g === 'female' ? '女' : '男';
+      }
+      function getActivity() {
+        var act = localStorage.getItem(KEY_ACTIVITY) || '1.55';
+        return ACTIVITY_LABELS[act] || act;
+      }
+      function getBmi() {
+        var h = getHeight();
+        var w = getLatestWeight();
+        if (!h || !w || h <= 0) return null;
+        return (w / Math.pow(h / 100, 2)).toFixed(1);
+      }
+
+      function renderSummary() {
+        var dl = document.getElementById('profileSummary');
+        var username = getUsername();
+        var height = getHeight();
+        var weight = getLatestWeight();
+        var birthdate = getBirthdate();
+        var age = getAge();
+        var gender = getGender();
+        var activity = getActivity();
+        var bmi = getBmi();
+
+        var rows = [];
+        rows.push({ label: '身高', value: height ? height + ' cm' : '—' });
+        rows.push({ label: '体重', value: weight != null ? weight + ' kg' : '—' });
+        rows.push({ label: 'BMI', value: bmi != null ? bmi : '—' });
+        rows.push({ label: '出生日期', value: birthdate ? birthdate.slice(0, 10) : '—' });
+        rows.push({ label: '年龄', value: age != null ? age + ' 岁' : '—' });
+        rows.push({ label: '性别', value: gender });
+        rows.push({ label: '活动量', value: activity });
+
+        dl.innerHTML = '';
+        rows.forEach(function(r) {
+          var dt = document.createElement('dt');
+          dt.textContent = r.label;
+          var dd = document.createElement('dd');
+          dd.textContent = r.value;
+          dl.appendChild(dt);
+          dl.appendChild(dd);
+        });
+      }
+
+      renderSummary();
+      window.renderSummary = renderSummary;
+    })();
+
+    (function() {
+      if (typeof window.FitUser === 'undefined') return;
+      var curSelect = document.getElementById('currentUserSelect');
+      var newNameInput = document.getElementById('newUserName');
+      var addBtn = document.getElementById('btnAddUser');
+      var currentUserHint = document.getElementById('currentUserHint');
+      var personalHint = document.getElementById('personalHint');
+      var inputHeight = document.getElementById('inputHeight');
+      var inputWeight = document.getElementById('inputWeight');
+      var inputBirthYear = document.getElementById('inputBirthYear');
+      var inputBirthMonth = document.getElementById('inputBirthMonth');
+      var inputBirthDay = document.getElementById('inputBirthDay');
+      var inputGender = document.getElementById('inputGender');
+      var inputActivity = document.getElementById('inputActivity');
+
+      function birthdateFromStorage() {
+        var s = localStorage.getItem('fit-calorie-birthdate') || '';
+        return s.length >= 10 ? s.slice(0, 10) : '';
+      }
+      function setBirthdateToInputs(dateStr) {
+        if (!dateStr || dateStr.length < 10) return;
+        var parts = dateStr.split('-');
+        if (parts.length !== 3) return;
+        if (inputBirthYear) inputBirthYear.value = parts[0];
+        if (inputBirthMonth) inputBirthMonth.value = String(parseInt(parts[1], 10));
+        if (inputBirthDay) inputBirthDay.value = String(parseInt(parts[2], 10));
+      }
+      function getBirthdateFromInputs() {
+        if (!inputBirthYear || !inputBirthMonth || !inputBirthDay) return '';
+        var y = inputBirthYear.value, m = inputBirthMonth.value, d = inputBirthDay.value;
+        if (!y || !m || !d) return '';
+        var month = parseInt(m, 10), day = parseInt(d, 10);
+        var maxDay = new Date(parseInt(y, 10), month, 0).getDate();
+        if (day > maxDay) day = maxDay;
+        return y + '-' + ('0' + month).slice(-2) + '-' + ('0' + day).slice(-2);
+      }
+
+      function fillBirthdateOptions() {
+        if (!inputBirthYear || !inputBirthMonth || !inputBirthDay) return;
+        var curYear = new Date().getFullYear();
+        if (inputBirthYear.options.length <= 1) {
+          for (var y = curYear; y >= curYear - 120; y--) {
+            var o = document.createElement('option');
+            o.value = y;
+            o.textContent = y + ' 年';
+            inputBirthYear.appendChild(o);
+          }
+        }
+        if (inputBirthMonth.options.length <= 1) {
+          for (var m = 1; m <= 12; m++) {
+            var o = document.createElement('option');
+            o.value = m;
+            o.textContent = m + ' 月';
+            inputBirthMonth.appendChild(o);
+          }
+        }
+        if (inputBirthDay.options.length <= 1) {
+          for (var d = 1; d <= 31; d++) {
+            var o = document.createElement('option');
+            o.value = d;
+            o.textContent = d + ' 日';
+            inputBirthDay.appendChild(o);
+          }
+        }
+      }
+
+      function refreshUserDropdown() {
+        var list = window.FitUser.getUserList();
+        var current = window.FitUser.getCurrentUsername();
+        curSelect.innerHTML = '';
+        list.forEach(function(name) {
+          var opt = document.createElement('option');
+          opt.value = name;
+          opt.textContent = name;
+          if (name === current) opt.selected = true;
+          curSelect.appendChild(opt);
+        });
+      }
+
+      function refreshPersonalForm() {
+        var h = localStorage.getItem('fit-height-cm');
+        var w = localStorage.getItem('fit-calorie-weight-override');
+        if (!w) {
+          try {
+            var raw = localStorage.getItem('fit-weight-records');
+            var arr = raw ? JSON.parse(raw) : [];
+            if (arr.length) arr.sort(function(a, b) { return b.date.localeCompare(a.date); });
+            w = arr.length ? arr[0].weight : '';
+          } catch (e) { w = ''; }
+        }
+        if (inputHeight) inputHeight.value = h || '';
+        if (inputWeight) inputWeight.value = w || '';
+        setBirthdateToInputs(birthdateFromStorage());
+        if (inputGender) inputGender.value = localStorage.getItem('fit-calorie-gender') || 'male';
+        if (inputActivity) inputActivity.value = localStorage.getItem('fit-calorie-activity') || '1.55';
+      }
+
+      function onUserSwitch() {
+        window.FitUser.saveWorkingToCurrentUser();
+        var name = curSelect.value;
+        window.FitUser.loadUserIntoWorking(name);
+        refreshPersonalForm();
+        if (window.renderSummary) window.renderSummary();
+      }
+
+      window.FitUser.ensureCurrentUser();
+      fillBirthdateOptions();
+      refreshUserDropdown();
+      refreshPersonalForm();
+
+      curSelect.addEventListener('change', onUserSwitch);
+
+      addBtn.addEventListener('click', function() {
+        var name = (newNameInput.value || '').trim();
+        currentUserHint.textContent = '';
+        if (!name) {
+          currentUserHint.textContent = '请输入新用户名。';
+          currentUserHint.style.color = '#f87171';
+          return;
+        }
+        if (!window.FitUser.addUser(name)) {
+          currentUserHint.textContent = '该用户已存在。';
+          currentUserHint.style.color = '#f87171';
+          return;
+        }
+        window.FitUser.saveWorkingToCurrentUser();
+        window.FitUser.loadUserIntoWorking(name);
+        localStorage.setItem('fit-username', name);
+        window.FitUser.saveWorkingToCurrentUser();
+        newNameInput.value = '';
+        refreshUserDropdown();
+        refreshPersonalForm();
+        if (window.renderSummary) window.renderSummary();
+        currentUserHint.textContent = '已添加并切换到「' + name + '」。';
+        currentUserHint.style.color = 'var(--hyperspace-fg-muted)';
+        setTimeout(function() { currentUserHint.textContent = ''; }, 2000);
+      });
+
+      document.getElementById('btnSavePersonal').addEventListener('click', function() {
+        var h = parseFloat(inputHeight.value, 10);
+        var w = parseFloat(inputWeight.value, 10);
+        var birth = getBirthdateFromInputs();
+        if (h && h >= 100 && h <= 250) localStorage.setItem('fit-height-cm', String(h));
+        if (w && w >= 30 && w <= 300) localStorage.setItem('fit-calorie-weight-override', String(w));
+        if (birth) localStorage.setItem('fit-calorie-birthdate', birth);
+        if (inputGender) localStorage.setItem('fit-calorie-gender', inputGender.value);
+        if (inputActivity) localStorage.setItem('fit-calorie-activity', inputActivity.value);
+        window.FitUser.saveWorkingToCurrentUser();
+        personalHint.textContent = '已保存，其他页面将使用当前用户数据。';
+        personalHint.style.color = 'var(--hyperspace-fg-muted)';
+        if (window.renderSummary) window.renderSummary();
+        setTimeout(function() { personalHint.textContent = ''; }, 2000);
+      });
+
+      (function() {
+        var KEY_RECORDS = 'fit-weight-records';
+        var fileInput = document.getElementById('inputWeightCsv');
+        var btnImport = document.getElementById('btnImportWeightCsv');
+
+        function isHeaderCell(s) {
+          var t = (s || '').trim().toLowerCase();
+          return t === '日期' || t === 'date' || t === '体重' || t === 'weight';
+        }
+        function parseDate(s) {
+          var t = (s || '').trim();
+          var m = t.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+          if (!m) return null;
+          var y = parseInt(m[1], 10), mo = parseInt(m[2], 10), d = parseInt(m[3], 10);
+          if (mo < 1 || mo > 12 || d < 1 || d > 31) return null;
+          return y + '-' + ('0' + mo).slice(-2) + '-' + ('0' + d).slice(-2);
+        }
+        function parseWeight(s) {
+          var n = parseFloat(String(s).trim().replace(/,/g, ''), 10);
+          return isNaN(n) || n < 20 || n > 300 ? null : n;
+        }
+        function parseCsvWeightRecords(text) {
+          var lines = text.split(/\r?\n/).filter(function(l) { return l.trim(); });
+          var rows = [];
+          for (var i = 0; i < lines.length; i++) {
+            var parts = lines[i].split(',').map(function(p) { return p.trim().replace(/^["']|["']$/g, ''); });
+            if (parts.length < 2) continue;
+            var dateStr = parseDate(parts[0]);
+            var weight = parseWeight(parts[1]);
+            if (dateStr && weight != null) rows.push({ date: dateStr, weight: weight });
+          }
+          if (lines.length && rows.length === 0 && (isHeaderCell(lines[0].split(',')[0]) || isHeaderCell(lines[0].split(',')[1])))
+            return parseCsvWeightRecords(lines.slice(1).join('\n'));
+          return rows;
+        }
+
+        if (btnImport) btnImport.addEventListener('click', function() { fileInput && fileInput.click(); });
+
+        document.getElementById('btnExportWeightCsv').addEventListener('click', function() {
+          var existing = [];
+          try {
+            var raw = localStorage.getItem(KEY_RECORDS);
+            existing = raw ? JSON.parse(raw) : [];
+          } catch (e) {}
+          if (existing.length === 0) {
+            personalHint.textContent = '暂无体重记录可导出。';
+            personalHint.style.color = '#f87171';
+            setTimeout(function() { personalHint.textContent = ''; }, 2000);
+            return;
+          }
+          existing.sort(function(a, b) { return a.date.localeCompare(b.date); });
+          var csv = '\uFEFF\u65E5\u671F,\u4F53\u91CD\n';
+          existing.forEach(function(r) { csv += r.date + ',' + r.weight + '\n'; });
+          var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = 'fit-weight-' + new Date().toISOString().slice(0, 10) + '.csv';
+          a.click();
+          URL.revokeObjectURL(url);
+          personalHint.textContent = '已导出 ' + existing.length + ' 条记录。';
+          personalHint.style.color = 'var(--hyperspace-fg-muted)';
+          setTimeout(function() { personalHint.textContent = ''; }, 2000);
+        });
+
+        if (fileInput) fileInput.addEventListener('change', function() {
+          var file = fileInput.files && fileInput.files[0];
+          fileInput.value = '';
+          if (!file) return;
+          var reader = new FileReader();
+          reader.onload = function() {
+            var text = reader.result;
+            var imported = parseCsvWeightRecords(text);
+            if (imported.length === 0) {
+              personalHint.textContent = '未解析到有效记录，请检查 CSV 格式（日期,体重）。';
+              personalHint.style.color = '#f87171';
+              return;
+            }
+            var existing = [];
+            try {
+              var raw = localStorage.getItem(KEY_RECORDS);
+              existing = raw ? JSON.parse(raw) : [];
+            } catch (e) {}
+            var byDate = {};
+            existing.forEach(function(r) { byDate[r.date] = r.weight; });
+            imported.forEach(function(r) { byDate[r.date] = r.weight; });
+            var merged = Object.keys(byDate).map(function(d) { return { date: d, weight: byDate[d] }; }).sort(function(a, b) { return a.date.localeCompare(b.date); });
+            localStorage.setItem(KEY_RECORDS, JSON.stringify(merged));
+            if (window.FitUser) window.FitUser.saveWorkingToCurrentUser();
+            personalHint.textContent = '已导入 ' + imported.length + ' 条体重记录，当前共 ' + merged.length + ' 条。';
+            personalHint.style.color = 'var(--hyperspace-fg-muted)';
+            if (window.renderSummary) window.renderSummary();
+            refreshPersonalForm();
+            setTimeout(function() { personalHint.textContent = ''; }, 3000);
+          };
+          reader.readAsText(file, 'UTF-8');
+        });
+      })();
+    })();
+
+    (function() {
+      var hint = document.getElementById('cloudSyncHint');
+      var fileInput = document.getElementById('inputDataCsv');
+      if (!window.FitDataCsv) return;
+
+      function setHint(msg, isError) {
+        if (!hint) return;
+        hint.textContent = msg || '';
+        hint.style.color = isError ? '#f87171' : 'var(--hyperspace-fg-muted)';
+      }
+
+      document.getElementById('btnSaveCloud').addEventListener('click', function() {
+        var username = (window.FitUser && window.FitUser.getCurrentUsername()) || 'fit-user';
+        window.FitDataCsv.downloadCsv(username);
+        setHint('已下载 ' + username + '.csv');
+        setTimeout(function() { setHint(''); }, 2000);
+      });
+
+      document.getElementById('btnLoadCloud').addEventListener('click', function() {
+        fileInput && fileInput.click();
+      });
+      if (fileInput) fileInput.addEventListener('change', function() {
+        var file = fileInput.files && fileInput.files[0];
+        fileInput.value = '';
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function() {
+          try {
+            window.FitDataCsv.loadFromFileContent(reader.result);
+            if (window.FitUser) window.FitUser.saveWorkingToCurrentUser();
+            setHint('已加载，正在刷新…');
+            setTimeout(function() { window.location.reload(); }, 600);
+          } catch (e) {
+            setHint(e.message || '解析失败', true);
+          }
+        };
+        reader.readAsText(file, 'UTF-8');
+      });
+    })();
+
+    (function() {
+      var sidebar = document.getElementById('sidebar');
+      var toggle = document.getElementById('sidebar-toggle');
+      if (toggle && sidebar) {
+        toggle.addEventListener('click', function() { sidebar.classList.toggle('open'); });
+        document.addEventListener('click', function(e) {
+          if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && !toggle.contains(e.target))
+            sidebar.classList.remove('open');
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

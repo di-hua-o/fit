@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>高尿酸专属 · 饮食补剂管理合集</title>
+  <link rel="stylesheet" href="../assets/css/hyperspace.css">
+</head>
+<body class="page-index">
+  <button type="button" id="sidebar-toggle" aria-label="打开菜单">☰</button>
+
+  <aside id="sidebar">
+    <div class="logo"><a href="index.html">饮食补剂管理</a></div>
+    <nav>
+      <ul>
+        <li><a href="profile.html">我的信息</a></li>
+        <li><a href="section1.html">每日饮食与补剂</a></li>
+        <li><a href="section2.html">一周饮食清单</a></li>
+        <li><a href="section3.html">采购清单</a></li>
+        <li><a href="section4.html">锻炼计划</a></li>
+        <li><a href="calendar.html">日历</a></li>
+        <li><a href="budget.html">开销统计</a></li>
+        <li><a href="weight.html">体重记录</a></li>
+        <li><a href="calorie.html">热量统计</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div id="wrapper">
+    <section id="intro">
+      <div class="inner">
+        <h1>高尿酸专属 · 饮食补剂管理合集</h1>
+        <p>每日饮食与补剂执行方案、一周餐单、采购清单与锻炼计划，一站式高尿酸友好管理。</p>
+      </div>
+    </section>
+
+    <section class="wrapper">
+      <div class="inner">
+        <div class="section-head">
+          <h2>目录</h2>
+          <p class="section-desc">选择下方模块进入对应章节</p>
+        </div>
+        <div class="features">
+          <div class="feature-card">
+            <h3>👤 我的信息</h3>
+            <p>设置用户名，汇总身高、体重、年龄等账户信息。</p>
+            <a href="profile.html" class="button">进入</a>
+          </div>
+          <div class="feature-card">
+            <h3>🍳 每日饮食与补剂执行方案</h3>
+            <p>早餐、午餐、晚餐、睡前加餐与补剂规范，高尿酸专属版。</p>
+            <a href="section1.html" class="button">进入</a>
+          </div>
+          <div class="feature-card">
+            <h3>📅 一周每日饮食清单</h3>
+            <p>周一至周日定制餐单，肉类与坚果轮换，固定分量。</p>
+            <a href="section2.html" class="button">进入</a>
+          </div>
+          <div class="feature-card">
+            <h3>🛒 饮食补剂采购清单</h3>
+            <p>主食、蛋白、蔬果坚果、补剂与调味类，高尿酸友好款。</p>
+            <a href="section3.html" class="button">进入</a>
+          </div>
+          <div class="feature-card">
+            <h3>🏃 锻炼计划</h3>
+            <p>工作日有氧与周末有氧+无氧安排。</p>
+            <a href="section4.html" class="button">进入</a>
+          </div>
+          <div class="feature-card">
+            <h3>📅 日历</h3>
+            <p>点击某一天查看当日饮食与训练安排。</p>
+            <a href="calendar.html" class="button">进入</a>
+          </div>
+          <div class="feature-card">
+            <h3>💰 开销统计</h3>
+            <p>一周饮食与补剂购物开销，参考上海消费。</p>
+            <a href="budget.html" class="button">进入</a>
+          </div>
+          <div class="feature-card">
+            <h3>📉 体重记录</h3>
+            <p>记录每日体重，查看历史趋势。</p>
+            <a href="weight.html" class="button">进入</a>
+          </div>
+          <div class="feature-card">
+            <h3>🔥 热量统计</h3>
+            <p>每日热量摄入与消耗估算。</p>
+            <a href="calorie.html" class="button">进入</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function() {
+      var sidebar = document.getElementById('sidebar');
+      var toggle = document.getElementById('sidebar-toggle');
+      if (toggle && sidebar) {
+        toggle.addEventListener('click', function() {
+          sidebar.classList.toggle('open');
+        });
+        document.addEventListener('click', function(e) {
+          if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && !toggle.contains(e.target)) {
+            sidebar.classList.remove('open');
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
