@@ -85,6 +85,10 @@ body.page-calorie::before {
   background-image: url('https://images.unsplash.com/photo-1546069901-d5bfd2cbfb1f?w=1920');
 }
 
+body.page-profile::before {
+  background-image: url('https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=1920');
+}
+
 /* ========== 侧边栏 ========== */
 #sidebar {
   position: fixed;
@@ -498,6 +502,122 @@ section .section-desc {
   color: var(--hyperspace-fg);
   font-size: 1rem;
   min-width: 5rem;
+}
+
+.page-content .profile-username-form {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.page-content .profile-username-form input {
+  padding: 0.5rem 0.75rem;
+  background: var(--hyperspace-bg);
+  border: 1px solid var(--hyperspace-border);
+  border-radius: 0.375rem;
+  color: var(--hyperspace-fg);
+  font-size: 1rem;
+  min-width: 12rem;
+  max-width: 20rem;
+}
+
+.page-content .profile-summary {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 2rem;
+  margin: 0;
+  font-size: 0.9375rem;
+}
+
+.page-content .profile-summary dt {
+  color: var(--hyperspace-fg-muted);
+  font-weight: 500;
+}
+
+.page-content .profile-summary dd {
+  margin: 0;
+}
+
+.page-content .profile-cloud-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.page-content .profile-cloud-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  color: var(--hyperspace-fg-muted);
+}
+
+.page-content .profile-cloud-form input[type="text"],
+.page-content .profile-cloud-form input[type="password"] {
+  padding: 0.5rem 0.75rem;
+  background: var(--hyperspace-bg);
+  border: 1px solid var(--hyperspace-border);
+  border-radius: 0.375rem;
+  color: var(--hyperspace-fg);
+  font-size: 1rem;
+  max-width: 24rem;
+}
+
+.page-content .profile-cloud-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.page-content .profile-current-user,
+.page-content .profile-personal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.page-content .profile-current-user label,
+.page-content .profile-personal-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  color: var(--hyperspace-fg-muted);
+}
+
+.page-content .profile-current-user select,
+.page-content .profile-personal-form input[type="number"],
+.page-content .profile-personal-form select {
+  padding: 0.5rem 0.75rem;
+  background: var(--hyperspace-bg);
+  border: 1px solid var(--hyperspace-border);
+  border-radius: 0.375rem;
+  color: var(--hyperspace-fg);
+  font-size: 1rem;
+  max-width: 16rem;
+}
+
+.page-content .profile-add-user {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.page-content .profile-add-user input {
+  padding: 0.5rem 0.75rem;
+  background: var(--hyperspace-bg);
+  border: 1px solid var(--hyperspace-border);
+  border-radius: 0.375rem;
+  color: var(--hyperspace-fg);
+  font-size: 1rem;
+  min-width: 10rem;
+}
+
+.page-content .profile-weight-import {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .page-content .calorie-day-select select {

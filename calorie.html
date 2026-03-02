@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>热量统计 · 饮食补剂管理</title>
   <link rel="stylesheet" href="assets/css/hyperspace.css">
+  <script src="assets/js/fit-user.js"></script>
 </head>
 <body class="page-calorie">
   <button type="button" id="sidebar-toggle" aria-label="打开菜单">☰</button>
@@ -13,6 +14,7 @@
     <div class="logo"><a href="index.html">饮食补剂管理</a></div>
     <nav>
       <ul>
+        <li><a href="profile.html">我的信息</a></li>
         <li><a href="section1.html">每日饮食与补剂</a></li>
         <li><a href="section2.html">一周饮食清单</a></li>
         <li><a href="section3.html">采购清单</a></li>
@@ -85,6 +87,7 @@
 
   <script>
     (function() {
+      if (window.FitUser) window.FitUser.ensureCurrentUser();
       var KEY_HEIGHT = 'fit-height-cm';
       var KEY_WEIGHT = 'fit-weight-records';
       var KEY_BIRTHDATE = 'fit-calorie-birthdate';
@@ -319,6 +322,7 @@
         if (birth && birth.length >= 10) localStorage.setItem(KEY_BIRTHDATE, birth.slice(0, 10));
         localStorage.setItem(KEY_GENDER, g);
         if (act) localStorage.setItem(KEY_ACTIVITY, act);
+        if (window.FitUser) window.FitUser.saveWorkingToCurrentUser();
         updateAgeDisplay();
         renderExpenditure();
         renderBalance(getDayIntake(parseInt(daySelect.value, 10)).total);
