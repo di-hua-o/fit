@@ -77,6 +77,10 @@ body.page-budget::before {
   background-image: url('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=1920');
 }
 
+body.page-weight::before {
+  background-image: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1920');
+}
+
 /* ========== 侧边栏 ========== */
 #sidebar {
   position: fixed;
@@ -355,6 +359,88 @@ section .section-desc {
   font-size: 1.25rem;
   margin: 0;
   color: var(--hyperspace-accent);
+}
+
+.page-content .weight-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.page-content .weight-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  color: var(--hyperspace-fg-muted);
+}
+
+.page-content .weight-form input,
+.page-content .weight-form select {
+  padding: 0.5rem 0.75rem;
+  background: var(--hyperspace-bg);
+  border: 1px solid var(--hyperspace-border);
+  border-radius: 0.375rem;
+  color: var(--hyperspace-fg);
+  font-size: 1rem;
+  min-width: 10rem;
+}
+
+.page-content .weight-form select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  padding-right: 2rem;
+}
+
+.page-content .weight-form .button {
+  padding: 0.5rem 1.25rem;
+  background: var(--hyperspace-accent);
+  color: #fff;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.page-content .weight-form .button:hover {
+  background: var(--hyperspace-accent-hover);
+}
+
+.page-content .weight-list table {
+  margin: 0;
+}
+
+.page-content .weight-del {
+  padding: 0.25rem 0.6rem;
+  background: transparent;
+  border: 1px solid var(--hyperspace-border);
+  color: var(--hyperspace-fg-muted);
+  border-radius: 0.25rem;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.page-content .weight-del:hover {
+  border-color: var(--hyperspace-accent);
+  color: var(--hyperspace-accent);
+}
+
+.page-content .chart-wrap {
+  position: relative;
+  height: 220px;
+  margin-bottom: 0.5rem;
+}
+
+.page-content .chart-empty {
+  color: var(--hyperspace-fg-muted);
+  font-size: 0.9375rem;
+  margin: 0;
+  padding: 1.5rem 0;
 }
 
 .page-content .back-link {
