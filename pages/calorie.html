@@ -65,6 +65,11 @@
         <div class="card">
           <h3>每日热量消耗</h3>
           <p id="expenditureResult" class="calorie-result">请先填写并保存身体数据。</p>
+          <label class="calorie-expenditure-override" style="display:block; margin-top:1rem;">
+            <span style="display:block; margin-bottom:0.35rem;">当日活动消耗手动输入（kcal）</span>
+            <input type="number" id="inputExpenditureOverride" min="0" max="2000" step="1" placeholder="仅替代日常活动消耗，留空则用推算值" style="max-width:12rem;">
+            <span style="display:block; color:var(--hyperspace-fg-muted); font-size:0.8125rem; margin-top:0.25rem;">总消耗 = 基础代谢 + 活动消耗（不替代基础代谢）</span>
+          </label>
         </div>
 
         <div class="card">
@@ -94,6 +99,7 @@
       var KEY_AGE = 'fit-calorie-age';
       var KEY_GENDER = 'fit-calorie-gender';
       var KEY_ACTIVITY = 'fit-calorie-activity';
+      var KEY_EXPENDITURE_OVERRIDE = 'fit-calorie-expenditure-override';
 
       function getHeight() {
         var h = localStorage.getItem(KEY_HEIGHT);
@@ -142,6 +148,24 @@
       function getActivity() {
         return parseFloat(localStorage.getItem(KEY_ACTIVITY) || '1.55', 10);
       }
+      /** 获取用于平衡的当日总消耗：有有效活动消耗输入时 = BMR + 输入（仅替代活动部分）；否则 = 推算的 TDEE。无身体数据时返回 null */
+      function getExpenditure() {
+        var height = getHeight();
+        var weight = getLatestWeight();
+        var age = getAgeForCalc();
+        var gender = getGender();
+        var activity = getActivity();
+        var b = height && weight && age ? bmr(weight, height, age, gender) : null;
+        var overrideRaw = localStorage.getItem(KEY_EXPENDITURE_OVERRIDE);
+        if (overrideRaw !== null && overrideRaw !== '') {
+          var override = parseFloat(overrideRaw, 10);
+          if (!isNaN(override) && override >= 0 && override <= 2000 && b !== null)
+            return Math.round(b) + Math.round(override);
+          if (!isNaN(override) && override >= 0 && override <= 2000) return null; /* 有活动输入但无 BMR，需身体数据 */
+        }
+        if (!height || !weight || !age) return null;
+        return Math.round(b * activity);
+      }
 
       function bmr(weight, height, age, gender) {
         if (!weight || !height || !age) return null;
@@ -187,15 +211,30 @@
         var el = document.getElementById('expenditureResult');
         if (!height || !weight) {
           el.innerHTML = '请先在「体重记录」页填写身高并保存，并至少有一条体重记录；或在本页填写身高、体重后保存。';
+          var rawOverride = localStorage.getItem(KEY_EXPENDITURE_OVERRIDE);
+          if (rawOverride !== null && rawOverride !== '' && !isNaN(parseFloat(rawOverride, 10))) {
+            el.innerHTML += '<br><span style="color:var(--hyperspace-fg-muted); font-size:0.9em;">已输入活动消耗。填写身体数据后，总消耗 = 基础代谢 + 活动消耗。</span>';
+          }
           return;
         }
         if (!age) {
           el.innerHTML = '请选择出生日期并保存。当前身高 ' + height + ' cm，体重 ' + weight + ' kg。';
+          var rawOverride = localStorage.getItem(KEY_EXPENDITURE_OVERRIDE);
+          if (rawOverride !== null && rawOverride !== '' && !isNaN(parseFloat(rawOverride, 10))) {
+            el.innerHTML += '<br><span style="color:var(--hyperspace-fg-muted); font-size:0.9em;">已输入活动消耗。填写身体数据后，总消耗 = 基础代谢 + 活动消耗。</span>';
+          }
           return;
         }
         var b = Math.round(bmr(weight, height, age, gender));
         var tdee = Math.round(b * activity);
+        var used = getExpenditure();
+        var rawOverride = localStorage.getItem(KEY_EXPENDITURE_OVERRIDE);
+        var hasOverride = rawOverride !== null && rawOverride !== '' && !isNaN(parseFloat(rawOverride, 10));
+        var activityPart = hasOverride ? Math.round(parseFloat(rawOverride, 10)) : (tdee - b);
         el.innerHTML = '基础代谢（BMR）约 <strong>' + b + '</strong> kcal/天；<br>每日总消耗（TDEE）约 <strong>' + tdee + '</strong> kcal/天（按当前活动量）。';
+        if (used !== null) {
+          el.innerHTML += '<br><span style="color:var(--hyperspace-fg-muted); font-size:0.9em;">当前用于平衡的消耗：<strong>' + used + '</strong> kcal/天' + (hasOverride ? '（基础代谢 ' + b + ' + 活动 ' + activityPart + ' kcal，已手动输入活动）' : '（推算值）') + '</span>';
+        }
       }
 
       function renderIntake() {
@@ -214,18 +253,17 @@
 
       function renderBalance(intake) {
         var el = document.getElementById('balanceResult');
-        var height = getHeight();
-        var weight = getLatestWeight();
-        var age = getAgeForCalc();
-        var gender = getGender();
-        var activity = getActivity();
-        if (!height || !weight || !age) {
-          el.textContent = '请先保存身体数据。';
+        var expenditure = getExpenditure();
+        if (expenditure === null) {
+          var rawOverride = localStorage.getItem(KEY_EXPENDITURE_OVERRIDE);
+          if (rawOverride !== null && rawOverride !== '' && !isNaN(parseFloat(rawOverride, 10)))
+            el.textContent = '已输入活动消耗。请先填写并保存身体数据，以便计算总消耗（基础代谢 + 活动）。';
+          else
+            el.textContent = '请先保存身体数据。';
           return;
         }
-        var tdee = Math.round(bmr(weight, height, age, gender) * activity);
-        var diff = intake - tdee;
-        var text = '摄入 <strong>' + intake + '</strong> kcal，消耗约 <strong>' + tdee + '</strong> kcal。';
+        var diff = intake - expenditure;
+        var text = '摄入 <strong>' + intake + '</strong> kcal，消耗约 <strong>' + expenditure + '</strong> kcal。';
         if (diff > 0) text += ' 当日盈余 <strong style="color:#f87171">+' + diff + '</strong> kcal。';
         else if (diff < 0) text += ' 当日赤字 <strong style="color:#34d399">' + diff + '</strong> kcal。';
         else text += ' 收支平衡。';
@@ -301,6 +339,27 @@
 
       document.getElementById('inputHeight').value = getHeight() || '';
       document.getElementById('inputWeight').value = getLatestWeight() || '';
+      var inputExpOverride = document.getElementById('inputExpenditureOverride');
+      inputExpOverride.value = localStorage.getItem(KEY_EXPENDITURE_OVERRIDE) || '';
+      inputExpOverride.addEventListener('input', function() {
+        var v = this.value.trim();
+        if (v === '') {
+          localStorage.removeItem(KEY_EXPENDITURE_OVERRIDE);
+        } else {
+          var n = parseFloat(v, 10);
+          if (!isNaN(n) && n >= 0 && n <= 2000) localStorage.setItem(KEY_EXPENDITURE_OVERRIDE, String(Math.round(n)));
+        }
+        if (window.FitUser) window.FitUser.saveWorkingToCurrentUser();
+        renderExpenditure();
+        renderBalance(getDayIntake(parseInt(daySelect.value, 10)).total);
+      });
+      inputExpOverride.addEventListener('blur', function() {
+        var v = this.value.trim();
+        if (v === '') return;
+        var n = parseFloat(v, 10);
+        if (isNaN(n) || n < 0 || n > 2000) this.value = localStorage.getItem(KEY_EXPENDITURE_OVERRIDE) || '';
+      });
+
       var savedBirth = localStorage.getItem(KEY_BIRTHDATE);
       setBirthdateToInputs(savedBirth || '');
       updateAgeDisplay();
