@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>一周购物开销 · 饮食补剂管理</title>
+  <link rel="stylesheet" href="assets/css/hyperspace.css">
+</head>
+<body class="page-budget">
+  <button type="button" id="sidebar-toggle" aria-label="打开菜单">☰</button>
+
+  <aside id="sidebar">
+    <div class="logo"><a href="index.html">饮食补剂管理</a></div>
+    <nav>
+      <ul>
+        <li><a href="section1.html">每日饮食与补剂</a></li>
+        <li><a href="section2.html">一周饮食清单</a></li>
+        <li><a href="section3.html">采购清单</a></li>
+        <li><a href="section4.html">锻炼计划</a></li>
+        <li><a href="calendar.html">日历</a></li>
+        <li><a href="budget.html" class="active">开销统计</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div id="wrapper">
+    <div class="inner">
+      <a href="index.html" class="back-link">← 返回目录</a>
+      <div class="page-content">
+        <h2>💰 一周购物开销统计</h2>
+        <p style="color: var(--hyperspace-fg-muted); font-size: 0.9375rem; margin-bottom: 1.5rem;">按当前方案估算，参考上海超市/市场消费水平（单位：元）。</p>
+
+        <div class="card">
+          <h3>🥬 一、饮食类（一周用量预估）</h3>
+          <table class="budget-table">
+            <thead>
+              <tr>
+                <th>品类</th>
+                <th>项目</th>
+                <th>一周用量/说明</th>
+                <th class="col-price">预估金额</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>主食</td><td>🥣 燕麦</td><td>约 420g</td><td class="col-price">14</td></tr>
+              <tr><td>主食</td><td>🍚 大米</td><td>约 700g</td><td class="col-price">6</td></tr>
+              <tr><td>主食</td><td>🥔 根茎（紫薯/土豆/红薯等）</td><td>约 1.4kg</td><td class="col-price">22</td></tr>
+              <tr><td>蛋白</td><td>🥚 鸡蛋</td><td>约 20 个</td><td class="col-price">30</td></tr>
+              <tr><td>蛋白</td><td>🍗 鸡腿/鸡胸</td><td>约 1.2kg</td><td class="col-price">38</td></tr>
+              <tr><td>蛋白</td><td>🥩 瘦牛肉</td><td>约 300g</td><td class="col-price">36</td></tr>
+              <tr><td>蛋白</td><td>🥩 瘦猪肉</td><td>约 200g</td><td class="col-price">12</td></tr>
+              <tr><td>蛋白</td><td>🐟 巴沙鱼/龙利鱼</td><td>约 450g</td><td class="col-price">28</td></tr>
+              <tr><td>蛋白</td><td>🥄 蛋白粉</td><td>按周均摊（约 1/4 罐）</td><td class="col-price">55</td></tr>
+              <tr><td>蛋白</td><td>🥛 无糖酸奶</td><td>7 小盒</td><td class="col-price">28</td></tr>
+              <tr><td>蔬果</td><td>🫐 蓝莓</td><td>约 3～4 盒</td><td class="col-price">70</td></tr>
+              <tr><td>蔬果</td><td>🥬 芦笋、香菇、绿叶菜</td><td>一周多样化</td><td class="col-price">85</td></tr>
+              <tr><td>坚果</td><td>🥜 原味坚果</td><td>约 105g（15g×7）</td><td class="col-price">12</td></tr>
+              <tr><td>调味</td><td>🧂 盐、生抽、黑胡椒等</td><td>按周均摊</td><td class="col-price">8</td></tr>
+              <tr class="row-subtotal">
+                <td colspan="3"><strong>饮食小计</strong></td>
+                <td class="col-price"><strong>460</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h3>💊 二、补剂类（按月购买，摊到一周）</h3>
+          <table class="budget-table">
+            <thead>
+              <tr>
+                <th>项目</th>
+                <th>说明</th>
+                <th class="col-price">周均金额</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>🐟 鱼油</td><td>约 80～120 元/瓶，按 2 月/瓶</td><td class="col-price">12</td></tr>
+              <tr><td>💊 辅酶 Q10</td><td>约 100～150 元/瓶，按 1.5 月/瓶</td><td class="col-price">25</td></tr>
+              <tr><td>🍊 维生素 C</td><td>国药平价款，约 20～30 元/瓶，按 1 月/瓶</td><td class="col-price">6</td></tr>
+              <tr><td>💊 男士复合维生素（GNC）</td><td>约 150～200 元/瓶，按 2 月/瓶</td><td class="col-price">22</td></tr>
+              <tr><td>💊 甘氨酸镁</td><td>约 50～80 元/瓶，按 1.5 月/瓶</td><td class="col-price">11</td></tr>
+              <tr class="row-subtotal">
+                <td colspan="2"><strong>补剂小计</strong></td>
+                <td class="col-price"><strong>76</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card budget-total">
+          <h3>📊 一周合计</h3>
+          <p class="total-amount">饮食 <strong>460</strong> + 补剂 <strong>76</strong> ≈ <strong>536 元/周</strong></p>
+          <p style="color: var(--hyperspace-fg-muted); font-size: 0.875rem; margin: 0.75rem 0 0;">约 2,300 元/月（按 4.3 周计），仅供参考，实际以当地价格为准。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var sidebar = document.getElementById('sidebar');
+      var toggle = document.getElementById('sidebar-toggle');
+      if (toggle && sidebar) {
+        toggle.addEventListener('click', function() { sidebar.classList.toggle('open'); });
+        document.addEventListener('click', function(e) {
+          if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && !toggle.contains(e.target))
+            sidebar.classList.remove('open');
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

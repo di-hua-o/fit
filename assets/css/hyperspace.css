@@ -73,6 +73,10 @@ body.page-calendar::before {
   background-image: url('https://images.unsplash.com/photo-1506784365847-bbad939e9335?w=1920');
 }
 
+body.page-budget::before {
+  background-image: url('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=1920');
+}
+
 /* ========== 侧边栏 ========== */
 #sidebar {
   position: fixed;
@@ -334,6 +338,23 @@ section .section-desc {
   font-size: 1rem;
   font-weight: 600;
   margin: 0 0 0.5rem;
+}
+
+.page-content .budget-table .col-price {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.page-content .budget-table .row-subtotal td {
+  border-top: 1px solid var(--hyperspace-border);
+  padding-top: 0.75rem;
+  color: var(--hyperspace-fg);
+}
+
+.page-content .budget-total .total-amount {
+  font-size: 1.25rem;
+  margin: 0;
+  color: var(--hyperspace-accent);
 }
 
 .page-content .back-link {
