@@ -75,6 +75,13 @@
         beforeBed: '30g酵母蛋白粉 + 15g🥜低嘌呤坚果（每日轮换）',
         water: '每日≥4L，晨起空腹500ml温水'
       };
+      var SUPPLEMENTS = [
+        { name: '🐟 鱼油', dose: '2 粒', time: '早 1 粒、晚 1 粒' },
+        { name: '💊 辅酶 Q10', dose: '2 粒', time: '早 1 粒、晚 1 粒' },
+        { name: '🍊 维生素 C', dose: '约 1000mg（约 10 粒）', time: '全天分次' },
+        { name: '💊 男士复合维生素', dose: '1 粒', time: '早上' },
+        { name: '💊 甘氨酸镁', dose: '1 粒', time: '睡前' }
+      ];
 
       var current = new Date();
       var selectedDate = null;
@@ -152,6 +159,11 @@
         html += '<li><strong>💧 饮水量</strong>：' + COMMON.water + '</li>';
         html += '</ul></div>';
         html += '<div class="detail-section"><h4>🏃 训练安排</h4><ul><li>' + training + '</li></ul></div>';
+        html += '<div class="detail-section"><h4>💊 当日补剂</h4><ul>';
+        SUPPLEMENTS.forEach(function(s) {
+          html += '<li><strong>' + s.name + '</strong>：' + s.dose + '，' + s.time + '</li>';
+        });
+        html += '</ul></div>';
 
         var el = document.getElementById('dayDetail');
         el.className = 'day-detail';
