@@ -29,10 +29,15 @@ const SUPPLEMENTS = [
   { name: '💊 甘氨酸镁', dose: '1 粒', time: '睡前' }
 ];
 
-function buildTodayPlan() {
+function buildPlan(offsetDays) {
   const now = new Date();
-  // GitHub Actions 为 UTC，这里转成北京时间（UTC+8）
-  const beijing = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+  // GitHub Actions 为 UTC，这里先转成北京时间（UTC+8），再按 offsetDays 推进
+  const beijingNow = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+  const beijing = new Date(
+    beijingNow.getFullYear(),
+    beijingNow.getMonth(),
+    beijingNow.getDate() + offsetDays
+  );
 
   const year = beijing.getFullYear();
   const month = beijing.getMonth() + 1;
@@ -69,7 +74,9 @@ function buildTodayPlan() {
 }
 
 async function main() {
-  const { beijing, text } = buildTodayPlan();
+  const offset = Number(process.env.PLAN_OFFSET_DAYS || '0'); // 0=今天，1=明天
+  const label = process.env.PLAN_LABEL || (offset === 0 ? '今日' : '明日');
+  const { beijing, text } = buildPlan(offset);
 
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,         // e.g. smtp.163.com
@@ -82,7 +89,7 @@ async function main() {
   });
 
   const subject =
-    `今日饮食与锻炼安排 - ` +
+    `${label}饮食与锻炼安排 - ` +
     `${beijing.getFullYear()}-${String(beijing.getMonth() + 1).padStart(2, '0')}-${String(beijing.getDate()).padStart(2, '0')}`;
 
   await transporter.sendMail({

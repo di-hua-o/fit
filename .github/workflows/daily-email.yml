@@ -2,13 +2,16 @@ name: Daily diet & workout mail
 
 on:
   schedule:
-    # 每天 00:00 UTC ≈ 北京时间 08:00
+    # 每天 00:00 UTC ≈ 北京时间 08:00（发「今天」）
     - cron: "0 0 * * *"
+    # 每天 12:00 UTC ≈ 北京时间 20:00（发「明天」）
+    - cron: "0 12 * * *"
   # 允许手动触发，方便测试
   workflow_dispatch: {}
 
 jobs:
-  send-mail:
+  morning-today:
+    if: github.event.schedule == '0 0 * * *'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -24,7 +27,7 @@ jobs:
           npm init -y
           npm install nodemailer
 
-      - name: Send daily mail
+      - name: Send today mail
         env:
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
@@ -32,5 +35,36 @@ jobs:
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           MAIL_FROM: ${{ secrets.MAIL_FROM }}
           MAIL_TO:   ${{ secrets.MAIL_TO }}
+          PLAN_OFFSET_DAYS: "0"
+          PLAN_LABEL: "今日"
+        run: node scripts/daily-email.js
+
+  evening-tomorrow:
+    if: github.event.schedule == '0 12 * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install nodemailer
+        run: |
+          npm init -y
+          npm install nodemailer
+
+      - name: Send tomorrow mail
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          MAIL_TO:   ${{ secrets.MAIL_TO }}
+          PLAN_OFFSET_DAYS: "1"
+          PLAN_LABEL: "明日"
         run: node scripts/daily-email.js
 
