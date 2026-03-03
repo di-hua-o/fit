@@ -88,11 +88,12 @@
 
         <div class="card">
           <h3>📁 导出 / 导入 CSV</h3>
-          <p style="color: var(--hyperspace-fg-muted); font-size: 0.8125rem; margin-bottom: 0.75rem;">将当前用户的个人信息与体重记录导出为 CSV 文件，或从本地 CSV 文件加载到当前用户（无需 server）。</p>
+          <p style="color: var(--hyperspace-fg-muted); font-size: 0.8125rem; margin-bottom: 0.75rem;">将当前用户数据导出到已记住的 data 目录，或从该目录加载。首次请用「从 data 目录加载」选择 data 文件夹，之后导出会自动写入该目录。</p>
           <div class="profile-cloud-form">
             <input type="file" id="inputDataCsv" accept=".csv" style="display:none">
             <div class="profile-cloud-buttons">
-              <button type="button" id="btnSaveCloud" class="button">下载 CSV</button>
+              <button type="button" id="btnSaveCloud" class="button">导出到 data / 下载</button>
+              <button type="button" id="btnLoadFromDataDir" class="button">从 data 目录加载</button>
               <button type="button" id="btnLoadCloud" class="button">从文件加载</button>
             </div>
           </div>
@@ -478,10 +479,49 @@
       }
 
       document.getElementById('btnSaveCloud').addEventListener('click', function() {
-        var username = (window.FitUser && window.FitUser.getCurrentUsername()) || 'fit-user';
-        window.FitDataCsv.downloadCsv(username);
-        setHint('已下载 ' + username + '.csv');
-        setTimeout(function() { setHint(''); }, 2000);
+        var username = (window.FitUser && window.FitUser.getCurrentUsername()) || (localStorage.getItem('fit-username') || 'fit-user');
+        username = (username || 'fit-user').trim() || 'fit-user';
+        if (typeof showDirectoryPicker === 'function' && window.FitDataCsv.saveToDataDirectory) {
+          setHint('正在导出…');
+          window.FitDataCsv.saveToDataDirectory(username)
+            .then(function(fileName) {
+              setHint('已保存到 data/' + fileName);
+              if (window.FitUser) window.FitUser.saveWorkingToCurrentUser();
+              setTimeout(function() { setHint(''); }, 3000);
+            })
+            .catch(function(e) {
+              if (e && e.name === 'AbortError') {
+                setHint('已取消');
+              } else {
+                window.FitDataCsv.downloadCsv(username);
+                setHint(e && e.message ? '已改为下载：' + e.message : '已下载 ' + username + '.csv');
+              }
+              setTimeout(function() { setHint(''); }, 3000);
+            });
+        } else {
+          window.FitDataCsv.downloadCsv(username);
+          setHint('已下载 ' + username + '.csv');
+          setTimeout(function() { setHint(''); }, 2000);
+        }
+      });
+
+      document.getElementById('btnLoadFromDataDir').addEventListener('click', function() {
+        if (!window.FitDataCsv.loadFromDataDirectory) {
+          setHint('当前浏览器不支持从 data 目录加载', true);
+          return;
+        }
+        setHint('请选择 data 目录…');
+        window.FitDataCsv.loadFromDataDirectory()
+          .then(function() {
+            if (window.FitUser) window.FitUser.saveWorkingToCurrentUser();
+            setHint('已加载并记住 data 目录，正在刷新…');
+            setTimeout(function() { window.location.reload(); }, 600);
+          })
+          .catch(function(e) {
+            if (e && e.name === 'AbortError') setHint('已取消');
+            else setHint((e && e.message) || '加载失败', true);
+            setTimeout(function() { setHint(''); }, 3000);
+          });
       });
 
       document.getElementById('btnLoadCloud').addEventListener('click', function() {

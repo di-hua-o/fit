@@ -6,6 +6,7 @@
   <title>体重记录 · 饮食补剂管理</title>
   <link rel="stylesheet" href="../assets/css/hyperspace.css">
   <script src="../assets/js/fit-user.js"></script>
+  <script src="../assets/js/data-csv.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body class="page-weight">
@@ -33,7 +34,7 @@
       <a href="index.html" class="back-link">← 返回目录</a>
       <div class="page-content">
         <h2>📉 体重记录</h2>
-        <p style="color: var(--hyperspace-fg-muted); font-size: 0.9375rem; margin-bottom: 1.5rem;">记录每日体重，数据保存在本机浏览器中。</p>
+        <p style="color: var(--hyperspace-fg-muted); font-size: 0.9375rem; margin-bottom: 1.5rem;">记录每日体重，数据保存在本机浏览器中。点击「保存到 data 目录」可选择项目的 <code>data</code> 文件夹，文件将直接写入该目录。</p>
 
         <div class="card">
           <h3>身高（用于计算 BMI）</h3>
@@ -75,7 +76,15 @@
         </div>
 
         <div class="card">
-          <h3>历史记录 <button type="button" id="btnExportCsv" class="button" style="margin-left:0.75rem; font-size:0.875rem;">导出 CSV</button></h3>
+          <h3>
+            历史记录
+            <button type="button" id="btnExportCsv" class="button" style="margin-left:0.75rem; font-size:0.875rem;">导出体重 CSV</button>
+            <button type="button" id="btnExportToData" class="button" style="margin-left:0.5rem; font-size:0.875rem;">保存到 data 目录</button>
+          </h3>
+          <p style="color: var(--hyperspace-fg-muted); font-size: 0.8125rem; margin: 0.5rem 0 0.25rem;">
+            「导出体重 CSV」仅包含日期与体重并触发下载；「保存到 data 目录」会优先写入在「我的信息」中通过「从 data 目录加载」记住的目录，未记住时再弹出选择。
+          </p>
+          <p id="exportToDataHint" style="color: var(--hyperspace-fg-muted); font-size: 0.8125rem; margin: 0.25rem 0 0.75rem; min-height: 1.25em;"></p>
           <div id="weightList" class="weight-list"></div>
           <p id="weightEmpty" class="weight-empty" style="display:none; color: var(--hyperspace-fg-muted); font-size: 0.9375rem;">暂无记录，添加第一条体重数据吧。</p>
         </div>
@@ -323,6 +332,41 @@
         a.click();
         URL.revokeObjectURL(url);
       });
+
+      (function() {
+        var btn = document.getElementById('btnExportToData');
+        var hint = document.getElementById('exportToDataHint');
+        if (!btn) return;
+        function setHint(msg, isError) {
+          if (hint) { hint.textContent = msg || ''; hint.style.color = isError ? '#f87171' : 'var(--hyperspace-fg-muted)'; }
+        }
+        btn.addEventListener('click', function() {
+          if (!window.FitDataCsv) return;
+          var username = (window.FitUser && window.FitUser.getCurrentUsername) ? window.FitUser.getCurrentUsername() : (localStorage.getItem('fit-username') || 'fit-user');
+          username = (username || 'fit-user').trim() || 'fit-user';
+          if (typeof showDirectoryPicker === 'function' && window.FitDataCsv.saveToDataDirectory) {
+            setHint('请选择项目的 data 目录…');
+            window.FitDataCsv.saveToDataDirectory(username)
+              .then(function(fileName) {
+                setHint('已保存到 data/' + fileName);
+                setTimeout(function() { setHint(''); }, 3000);
+              })
+              .catch(function(e) {
+                if (e.name === 'AbortError') {
+                  setHint('已取消');
+                } else {
+                  setHint(e.message || '未保存');
+                  window.FitDataCsv.downloadCsv(username);
+                }
+                setTimeout(function() { setHint(''); }, 3000);
+              });
+          } else {
+            window.FitDataCsv.downloadCsv(username);
+            setHint('当前浏览器不支持直接写入目录，已改为下载。请将下载的文件放到 data 目录。');
+            setTimeout(function() { setHint(''); }, 3000);
+          }
+        });
+      })();
 
     })();
 
