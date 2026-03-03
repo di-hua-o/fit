@@ -12,7 +12,7 @@ fit/
 ├── all.md                    # 源文档（饮食补剂与锻炼内容）
 ├── weight-export.csv         # 示例/导出的体重 CSV（可删）
 │
-├── pages/                    # 所有 HTML 页面与备用样式
+├── docs/                     # 所有 HTML 页面与备用样式（GitHub Pages 根目录）
 │   ├── common.css            # 备用样式（苹果风格）
 │   ├── index.html            # 首页（目录与模块入口）
 │   ├── profile.html          # 我的信息
@@ -58,7 +58,15 @@ fit/
 
 ## 快速开始
 
-用浏览器直接打开 **`pages/index.html`**（或任意 `pages/*.html`），即可使用。体重、热量等数据保存在本机 localStorage，**多用户**在「我的信息」里切换。导出/导入：在「我的信息」点「下载 CSV」保存到本地，或点「从文件加载」选择之前导出的 CSV。
+本地使用：用浏览器直接打开 **`docs/index.html`**（或任意 `docs/*.html`），即可使用。体重、热量等数据保存在本机 localStorage，**多用户**在「我的信息」里切换。导出/导入：在「我的信息」点「下载 CSV」保存到本地，或点「从文件加载」选择之前导出的 CSV。
+
+---
+
+## GitHub Pages 部署
+
+- **分支**：`main`
+- **目录**：`/docs`（Settings → Pages → Build and deployment → Branch: `main`，Folder: `/docs`）
+- 部署成功后访问形如 `https://<your-username>.github.io/fit/` 的地址即可在线使用本应用。
 
 ---
 
