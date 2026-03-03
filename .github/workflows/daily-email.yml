@@ -1,0 +1,36 @@
+name: Daily diet & workout mail
+
+on:
+  schedule:
+    # 每天 00:00 UTC ≈ 北京时间 08:00
+    - cron: "0 0 * * *"
+  # 允许手动触发，方便测试
+  workflow_dispatch: {}
+
+jobs:
+  send-mail:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install nodemailer
+        run: |
+          npm init -y
+          npm install nodemailer
+
+      - name: Send daily mail
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          MAIL_TO:   ${{ secrets.MAIL_TO }}
+        run: node scripts/daily-email.js
+
