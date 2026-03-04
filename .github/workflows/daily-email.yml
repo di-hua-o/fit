@@ -6,12 +6,14 @@ on:
     - cron: "0 22 * * *"
     # 每天 10:00 UTC ≈ 北京时间 18:00（发「明天」）
     - cron: "0 10 * * *"
-  # 允许手动触发，方便测试
+  # 允许手动触发，方便测试；手动触发时两个 job 都会执行（今日+明日各一封）
   workflow_dispatch: {}
 
 jobs:
   morning-today:
-    if: github.event.schedule == '0 22 * * *'
+    # 定时触发：只在 0 22 * * * 这条 cron 下执行；
+    # 手动触发：github.event_name != 'schedule'，条件为真，也会执行。
+    if: github.event_name != 'schedule' || github.event.schedule == '0 22 * * *'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -42,7 +44,9 @@ jobs:
         run: node scripts/daily-email.js
 
   evening-tomorrow:
-    if: github.event.schedule == '0 10 * * *'
+    # 定时触发：只在 0 10 * * * 这条 cron 下执行；
+    # 手动触发：github.event_name != 'schedule'，条件为真，也会执行。
+    if: github.event_name != 'schedule' || github.event.schedule == '0 10 * * *'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
