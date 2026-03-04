@@ -47,29 +47,30 @@ function buildPlan(offsetDays) {
   const weekdayName = WEEKDAY_NAMES[weekday];
   const meal = MEALS[weekday];
 
-  let text = '';
-  text += `日期：${year}年${month}月${day}日 ${weekdayName}\n\n`;
-  text += '【饮食安排】\n';
-  text += `早餐：${COMMON.breakfast}\n`;
-  text += `午餐：${meal.lunch}\n`;
-  text += `晚餐：${meal.dinner}\n`;
-  text += `睡前加餐：${COMMON.beforeBed}（今日坚果：${meal.nut}）\n`;
-  text += `饮水量：${COMMON.water}\n\n`;
+  // 早中晚补剂简要描述
+  const morningSupp = '鱼油 1 粒、辅酶 Q10 1 粒、男士复合维生素 1 粒、维生素 C 若干粒分次';
+  const noonSupp = '维生素 C 若干粒分次';
+  const eveningSupp = '鱼油 1 粒、辅酶 Q10 1 粒、甘氨酸镁 1 粒、维生素 C 若干粒分次';
 
-  text += '【训练安排】\n';
+  let lines = [];
+  lines.push(`日期：${year}年${month}月${day}日 ${weekdayName}`);
+  lines.push('');
+  lines.push(`早：${COMMON.breakfast}；补剂：${morningSupp}`);
+  lines.push(`中：${meal.lunch}；补剂：${noonSupp}`);
+  lines.push(`晚：${meal.dinner}；补剂：${eveningSupp}`);
+  lines.push('');
+
+  // 简要补充饮水与训练
+  lines.push(`饮水：${COMMON.water}`);
   if (weekday === 0 || weekday === 6) {
-    text += '有氧 + 无氧锻炼：每周两次（周末，详细计划待补充）\n\n';
+    lines.push('训练：有氧 + 无氧锻炼（周末两次，详细计划见锻炼页）');
   } else if (weekday === 2 || weekday === 4) {
-    text += '有氧训练：30 分钟爬楼梯（周二/周四）\n\n';
+    lines.push('训练：30 分钟爬楼梯（周二/周四）');
   } else {
-    text += '今天无固定训练安排，可按需轻度活动。\n\n';
+    lines.push('训练：无固定计划，可按需轻度活动');
   }
 
-  text += '【补剂安排】\n';
-  SUPPLEMENTS.forEach(s => {
-    text += `${s.name}：${s.dose}，${s.time}\n`;
-  });
-
+  const text = lines.join('\n');
   return { beijing, text };
 }
 

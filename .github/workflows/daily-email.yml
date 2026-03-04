@@ -2,16 +2,16 @@ name: Daily diet & workout mail
 
 on:
   schedule:
-    # 每天 00:00 UTC ≈ 北京时间 08:00（发「今天」）
-    - cron: "0 0 * * *"
-    # 每天 12:00 UTC ≈ 北京时间 20:00（发「明天」）
-    - cron: "0 12 * * *"
+    # 每天 22:00 UTC ≈ 北京时间 06:00（发「今天」）
+    - cron: "0 22 * * *"
+    # 每天 10:00 UTC ≈ 北京时间 18:00（发「明天」）
+    - cron: "0 10 * * *"
   # 允许手动触发，方便测试
   workflow_dispatch: {}
 
 jobs:
   morning-today:
-    if: github.event.schedule == '0 0 * * *'
+    if: github.event.schedule == '0 22 * * *'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -40,7 +40,7 @@ jobs:
         run: node scripts/daily-email.js
 
   evening-tomorrow:
-    if: github.event.schedule == '0 12 * * *'
+    if: github.event.schedule == '0 10 * * *'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
