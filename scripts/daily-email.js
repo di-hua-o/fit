@@ -1,5 +1,6 @@
 // scripts/daily-email.js
 // 使用 nodemailer 通过 SMTP 发送「今日饮食 + 锻炼 + 补剂」邮件
+// 支持给多个账户发送，并在正文中附带每个账户的基础数据（性别、年龄、身高、体重）。
 
 const nodemailer = require('nodemailer');
 
@@ -90,18 +91,63 @@ async function main() {
     }
   });
 
-  const subject =
+  const subjectBase =
     `${label}饮食与锻炼安排 - ` +
     `${beijing.getFullYear()}-${String(beijing.getMonth() + 1).padStart(2, '0')}-${String(beijing.getDate()).padStart(2, '0')}`;
 
-  await transporter.sendMail({
-    from: process.env.MAIL_FROM,
-    to: process.env.MAIL_TO,
-    subject,
-    text
-  });
+  // 优先从仓库中的 accounts.json 读取多账户配置，若不存在则退回到 MAIL_TO。
+  let accounts = [];
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const accountsPath = process.env.ACCOUNTS_FILE || path.join(__dirname, 'accounts.json');
+    if (fs.existsSync(accountsPath)) {
+      const raw = fs.readFileSync(accountsPath, 'utf8');
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        accounts = parsed.filter(a => a && a.email);
+      }
+    }
+  } catch (e) {
+    console.error('Failed to load accounts.json:', e);
+  }
 
-  console.log('Mail sent:\n', text);
+  if (accounts.length === 0 && process.env.MAIL_TO) {
+    accounts = [{ email: process.env.MAIL_TO }];
+  }
+
+  if (accounts.length === 0) {
+    console.error('No recipients configured (accounts.json / MAIL_TO).');
+    process.exit(1);
+  }
+
+  for (const acc of accounts) {
+    const gender = acc.gender || '';
+    const age = acc.age != null ? String(acc.age) : '';
+    const weight = acc.weight != null ? String(acc.weight) : '';
+    const height = acc.height != null ? String(acc.height) : '';
+
+    let personalLines = [];
+    if (gender || age || weight || height) {
+      personalLines.push('');
+      personalLines.push('——— 个人基础数据 ——');
+      if (gender) personalLines.push(`性别：${gender}`);
+      if (age) personalLines.push(`年龄：${age} 岁`);
+      if (height) personalLines.push(`身高：${height} cm`);
+      if (weight) personalLines.push(`体重：${weight} kg`);
+    }
+
+    const mailText = text + (personalLines.length ? '\n' + personalLines.join('\n') : '');
+
+    await transporter.sendMail({
+      from: process.env.MAIL_FROM,
+      to: acc.email,
+      subject: subjectBase,
+      text: mailText
+    });
+
+    console.log(`Mail sent to ${acc.email}:\n`, mailText);
+  }
 }
 
 main().catch(err => {

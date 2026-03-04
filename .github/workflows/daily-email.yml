@@ -34,7 +34,9 @@ jobs:
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          # 可选：若配置 DAILY_EMAIL_ACCOUNTS，则忽略 MAIL_TO，使用 JSON 数组定义多账户及其基础数据
           MAIL_TO:   ${{ secrets.MAIL_TO }}
+          ACCOUNTS_JSON: ${{ secrets.DAILY_EMAIL_ACCOUNTS }}
           PLAN_OFFSET_DAYS: "0"
           PLAN_LABEL: "今日"
         run: node scripts/daily-email.js
@@ -64,6 +66,7 @@ jobs:
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           MAIL_FROM: ${{ secrets.MAIL_FROM }}
           MAIL_TO:   ${{ secrets.MAIL_TO }}
+          ACCOUNTS_JSON: ${{ secrets.DAILY_EMAIL_ACCOUNTS }}
           PLAN_OFFSET_DAYS: "1"
           PLAN_LABEL: "明日"
         run: node scripts/daily-email.js

@@ -1,0 +1,44 @@
+name: Update weights from mail
+
+on:
+  schedule:
+    # 每天 13:00 UTC ≈ 北京时间 21:00（可按需调整频率）
+    - cron: "0 13 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  update-weights:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: |
+          npm init -y
+          npm install imapflow mailparser
+
+      - name: Update weights from mail
+        env:
+          IMAP_HOST: ${{ secrets.IMAP_HOST }}
+          IMAP_PORT: ${{ secrets.IMAP_PORT }}
+          IMAP_USER: ${{ secrets.IMAP_USER }}
+          IMAP_PASS: ${{ secrets.IMAP_PASS }}
+        run: node scripts/update-weights-from-mail.js
+
+      - name: Commit changes if any
+        run: |
+          if git status --porcelain | grep scripts/accounts.json; then
+            git -c user.name="github-actions[bot]" -c user.email="github-actions[bot]@users.noreply.github.com" commit -am "chore: update weights from mail"
+            git push
+          else
+            echo "No changes to commit."
+          fi
+

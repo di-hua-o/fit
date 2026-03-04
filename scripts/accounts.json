@@ -1,0 +1,17 @@
+[
+  {
+    "email": "example1@example.com",
+    "gender": "男",
+    "age": 35,
+    "weight": 82.5,
+    "height": 178
+  },
+  {
+    "email": "example2@example.com",
+    "gender": "女",
+    "age": 30,
+    "weight": 55.0,
+    "height": 165
+  }
+]
+
