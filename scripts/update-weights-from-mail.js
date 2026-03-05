@@ -29,6 +29,11 @@ function normalizeEmail(addr) {
   return (m ? m[1] : addr).trim().toLowerCase();
 }
 
+function stripHtml(html) {
+  if (!html) return '';
+  return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
 function parseWeightFromText(text) {
   if (!text) return null;
   const re = /(今日)?\s*体重\s*[:：]\s*([\d\.]+)\s*kg?/i;
@@ -65,7 +70,10 @@ async function main() {
       if (!email) continue;
 
       const parsed = await simpleParser(msg.source);
-      const body = (parsed.text || '').trim();
+      // 同时从纯文本和 HTML 正文解析（Gmail 等常只发 HTML，parsed.text 为空）
+      const textPart = (parsed.text || '').trim();
+      const htmlPart = stripHtml(parsed.html || '');
+      const body = textPart || htmlPart;
       const w = parseWeightFromText(body);
       if (w == null) {
         console.log(`Skip mail from ${email}: no weight found.`);
