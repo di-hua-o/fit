@@ -26,7 +26,7 @@ const COMMON = {
 const SUPPLEMENTS = [
   { name: '🐟 鱼油', dose: '2 粒', time: '早 1 粒、晚 1 粒' },
   { name: '💊 辅酶 Q10', dose: '2 粒', time: '早 1 粒、晚 1 粒' },
-  { name: '🍊 维生素 C', dose: '约 1000mg（约 10 粒）', time: '全天分次' },
+  { name: '🍊 维生素 C', dose: '约 1000mg（约 10 粒）', time: '中午5粒、晚上5粒' },
   { name: '💊 男士复合维生素', dose: '1 粒', time: '早上' },
   { name: '💊 甘氨酸镁', dose: '1 粒', time: '睡前' }
 ];
@@ -50,9 +50,9 @@ function buildPlan(offsetDays) {
   const meal = MEALS[weekday];
 
   // 早中晚补剂简要描述
-  const morningSupp = '鱼油 1 粒、辅酶 Q10 1 粒、男士复合维生素 1 粒、维生素 C 若干粒分次';
-  const noonSupp = '维生素 C 若干粒分次';
-  const eveningSupp = '鱼油 1 粒、辅酶 Q10 1 粒、甘氨酸镁 1 粒、维生素 C 若干粒分次';
+  const morningSupp = '鱼油 1 粒、辅酶 Q10 1 粒、男士复合维生素 1 粒';
+  const noonSupp = '维生素 C 5 粒';
+  const eveningSupp = '鱼油 1 粒、辅酶 Q10 1 粒、甘氨酸镁 1 粒、维生素 C 5 粒';
 
   let lines = [];
   lines.push(`日期：${year}年${month}月${day}日 ${weekdayName}`);
