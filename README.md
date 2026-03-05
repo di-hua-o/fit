@@ -12,6 +12,11 @@ fit/
 ├── all.md                    # 源文档（饮食补剂与锻炼内容）
 ├── weight-export.csv         # 示例/导出的体重 CSV（可删）
 │
+├── scripts/                  # 邮件与体重更新脚本（Node.js）
+│   ├── accounts.json        # 多账户配置（邮箱、性别/年龄/身高/体重等），发每日邮件与按邮件更新体重时使用
+│   ├── daily-email.js       # 通过 SMTP 发送「今日饮食 + 锻炼 + 补剂」邮件，正文含各账户当前体重
+│   └── update-weights-from-mail.js   # 从 IMAP 读未读邮件，解析正文中的体重并写回 accounts.json
+│
 ├── docs/                     # 所有 HTML 页面与备用样式（GitHub Pages 根目录）
 │   ├── common.css            # 备用样式（苹果风格）
 │   ├── index.html            # 首页（目录与模块入口）
@@ -67,6 +72,14 @@ fit/
 - **分支**：`main`
 - **目录**：`/docs`（Settings → Pages → Build and deployment → Branch: `main`，Folder: `/docs`）
 - 部署成功后访问形如 `https://<your-username>.github.io/fit/` 的地址即可在线使用本应用。
+
+---
+
+## 邮件与体重更新（脚本）
+
+- **每日邮件**：`scripts/daily-email.js` 按 `scripts/accounts.json` 中的账户，通过 SMTP 发送「今日饮食 + 锻炼 + 补剂」邮件，正文中会附带该账户当前体重等信息。
+- **通过邮件更新体重**：`scripts/update-weights-from-mail.js` 通过 IMAP 读取**未读**邮件，在正文中解析类似「今日体重：83.5kg」或「体重：83.5 kg」的文本，根据**发件人邮箱**匹配 `accounts.json` 中的账户并更新其 `weight`，然后将该邮件标为已读。
+- **回复或新邮件均可**：不区分是回复每日邮件还是新发一封邮件。只要发件人是 `accounts.json` 里配置的邮箱，且正文中有合法体重（如 `体重：83.5kg`），就会更新对应账户的体重。定时任务（如 GitHub Actions）跑完脚本后可将更新后的 `accounts.json` 自动提交回仓库。
 
 ---
 
