@@ -59,18 +59,20 @@ async function main() {
   await client.connect();
   await client.mailboxOpen('INBOX');
 
-  // 只处理未读邮件
+  // 只处理最近 7 天的未读邮件，且只处理发件人在 accounts 中的邮件（避免扫整箱历史未读）
+  const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
   const lock = await client.getMailboxLock('INBOX');
   let accounts = await loadAccounts();
+  const accountEmails = new Set(accounts.map(a => normalizeEmail(a.email)));
   let changed = false;
   try {
-    for await (let msg of client.fetch({ seen: false }, { envelope: true, source: true })) {
+    for await (let msg of client.fetch({ seen: false, since }, { envelope: true, source: true })) {
       const fromAddr = msg.envelope.from && msg.envelope.from[0] && msg.envelope.from[0].address;
       const email = normalizeEmail(fromAddr);
       if (!email) continue;
+      if (!accountEmails.has(email)) continue; // 发件人不在名单内，不解析正文也不打 log
 
       const parsed = await simpleParser(msg.source);
-      // 同时从纯文本和 HTML 正文解析（Gmail 等常只发 HTML，parsed.text 为空）
       const textPart = (parsed.text || '').trim();
       const htmlPart = stripHtml(parsed.html || '');
       const body = textPart || htmlPart;
@@ -81,16 +83,11 @@ async function main() {
       }
 
       const idx = accounts.findIndex(a => normalizeEmail(a.email) === email);
-      if (idx === -1) {
-        console.log(`No account matched for ${email}, skipping.`);
-        continue;
-      }
+      if (idx === -1) continue;
 
       console.log(`Update weight for ${email}: ${w} kg`);
       accounts[idx].weight = w;
       changed = true;
-
-      // 标记为已读，避免重复处理
       await client.messageFlagsAdd(msg.uid, ['\\Seen']);
     }
   } finally {
