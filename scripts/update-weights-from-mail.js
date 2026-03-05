@@ -73,10 +73,12 @@ async function main() {
   await client.connect();
   await client.mailboxOpen('INBOX');
 
+  // 只看最近 7 天的邮件（包含已读和未读）
   const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
   const lock = await client.getMailboxLock('INBOX');
   try {
-    for await (let msg of client.fetch({ seen: false, since }, { envelope: true, source: true })) {
+    // 注意：按时间顺序遍历，同一邮箱多封邮件时，后面的会覆盖前面的体重 => 等价于“以最新一封为准”
+    for await (let msg of client.fetch({ since }, { envelope: true, source: true })) {
       const fromAddr = msg.envelope.from && msg.envelope.from[0] && msg.envelope.from[0].address;
       const email = normalizeEmail(fromAddr);
       if (!email) continue;
@@ -100,11 +102,6 @@ async function main() {
       changed = true;
       saveAccounts(accounts); // 立即写入，避免后续 IMAP 超时时更新丢失
       console.log('accounts.json updated.');
-      try {
-        await client.messageFlagsAdd(msg.uid, ['\\Seen']);
-      } catch (e) {
-        console.warn('Mark as read failed (ignored):', e.message || e);
-      }
     }
   } catch (e) {
     if (changed) {
