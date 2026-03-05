@@ -73,13 +73,20 @@
         </div>
 
         <div class="card">
-          <h3>每日热量摄入（按当前餐单）</h3>
+          <h3>每日热量与营养素摄入（按当前餐单）</h3>
           <label class="calorie-day-select"><span>选择星期</span><select id="daySelect"></select></label>
           <table class="budget-table" id="intakeTable">
-            <thead><tr><th>餐次/项目</th><th class="col-price">热量（kcal）</th></tr></thead>
+            <thead><tr><th>餐次/项目</th><th class="col-num">热量（kcal）</th><th class="col-num">蛋白质（g）</th><th class="col-num">碳水（g）</th><th class="col-num">脂肪（g）</th></tr></thead>
             <tbody id="intakeBody"></tbody>
-            <tfoot><tr class="row-subtotal"><td><strong>当日合计</strong></td><td class="col-price" id="intakeTotal">—</td></tr></tfoot>
+            <tfoot><tr class="row-subtotal"><td><strong>当日合计</strong></td><td class="col-num" id="intakeTotal">—</td><td class="col-num" id="intakeProtein">—</td><td class="col-num" id="intakeCarb">—</td><td class="col-num" id="intakeFat">—</td></tr></tfoot>
           </table>
+        </div>
+
+        <div class="card">
+          <h3>推荐每日营养素摄入（按当前性别、身高、体重、年龄）</h3>
+          <p style="color: var(--hyperspace-fg-muted); font-size: 0.8125rem; margin-bottom: 0.75rem;">基于每日总消耗（TDEE），蛋白质按 1.6 g/kg 体重，脂肪约 25% 热量，碳水为剩余热量折算。</p>
+          <p id="recommendedMacrosResult" class="calorie-result">请先填写并保存身体数据。</p>
+          <p id="macroCompareResult" class="calorie-result" style="margin-top:0.75rem;"></p>
         </div>
 
         <div class="card">
@@ -175,31 +182,36 @@
 
       var DAY_NAMES = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
       var COMMON = [
-        { name: '早餐 60g 燕麦', kcal: 228 },
-        { name: '早餐 2 个白煮蛋', kcal: 310 },
-        { name: '早餐 1 小盒无糖酸奶', kcal: 60 },
-        { name: '早餐 半盒蓝莓', kcal: 30 },
-        { name: '早餐 25g 蛋白粉', kcal: 100 },
-        { name: '午餐 100g 米饭', kcal: 130 },
-        { name: '午餐 蔬菜', kcal: 50 },
-        { name: '睡前 30g 蛋白粉', kcal: 120 },
-        { name: '睡前 15g 坚果', kcal: 90 }
+        { name: '早餐 60g 燕麦', kcal: 228, protein: 4, carb: 22, fat: 2 },
+        { name: '早餐 2 个白煮蛋', kcal: 310, protein: 12, carb: 1, fat: 10 },
+        { name: '早餐 1 小盒无糖酸奶', kcal: 60, protein: 4, carb: 6, fat: 0 },
+        { name: '早餐 半盒蓝莓', kcal: 30, protein: 0.5, carb: 7, fat: 0 },
+        { name: '早餐 25g 蛋白粉', kcal: 100, protein: 20, carb: 2, fat: 1 },
+        { name: '午餐 100g 米饭', kcal: 130, protein: 2.6, carb: 28, fat: 0.3 },
+        { name: '午餐 蔬菜', kcal: 50, protein: 1, carb: 2, fat: 0 },
+        { name: '睡前 30g 蛋白粉', kcal: 120, protein: 24, carb: 2, fat: 1 },
+        { name: '睡前 15g 坚果', kcal: 90, protein: 3, carb: 3, fat: 7 }
       ];
       var DAY_MEALS = [
-        [ { name: '午餐 2 个去皮鸡腿', kcal: 324 }, { name: '晚餐 200g 紫薯', kcal: 172 }, { name: '晚餐 150g 鸡胸肉', kcal: 170 } ],
-        [ { name: '午餐 100g 瘦牛肉', kcal: 250 }, { name: '晚餐 200g 土豆', kcal: 154 }, { name: '晚餐 150g 巴沙鱼', kcal: 132 } ],
-        [ { name: '午餐 150g 鸡胸肉', kcal: 170 }, { name: '晚餐 200g 红薯', kcal: 172 }, { name: '晚餐 2 个去皮鸡腿', kcal: 324 } ],
-        [ { name: '午餐 150g 龙利鱼', kcal: 132 }, { name: '晚餐 200g 芋头', kcal: 224 }, { name: '晚餐 100g 瘦猪肉', kcal: 143 } ],
-        [ { name: '午餐 100g 瘦猪肉', kcal: 143 }, { name: '晚餐 200g 紫薯', kcal: 172 }, { name: '晚餐 100g 瘦牛肉', kcal: 250 } ],
-        [ { name: '午餐 2 个去皮鸡腿', kcal: 324 }, { name: '晚餐 200g 土豆', kcal: 154 }, { name: '晚餐 3 个白煮蛋', kcal: 465 } ],
-        [ { name: '午餐 150g 巴沙鱼', kcal: 132 }, { name: '晚餐 200g 红薯', kcal: 172 }, { name: '晚餐 100g 瘦牛肉', kcal: 250 } ]
+        [ { name: '午餐 2 个去皮鸡腿', kcal: 324, protein: 43, carb: 0, fat: 14 }, { name: '晚餐 200g 紫薯', kcal: 172, protein: 6, carb: 40, fat: 0 }, { name: '晚餐 150g 鸡胸肉', kcal: 170, protein: 35, carb: 0, fat: 4 } ],
+        [ { name: '午餐 100g 瘦牛肉', kcal: 250, protein: 26, carb: 0, fat: 10 }, { name: '晚餐 200g 土豆', kcal: 154, protein: 4, carb: 34, fat: 0 }, { name: '晚餐 150g 巴沙鱼', kcal: 132, protein: 22, carb: 0, fat: 2 } ],
+        [ { name: '午餐 150g 鸡胸肉', kcal: 170, protein: 35, carb: 0, fat: 4 }, { name: '晚餐 200g 红薯', kcal: 172, protein: 6, carb: 40, fat: 0 }, { name: '晚餐 2 个去皮鸡腿', kcal: 324, protein: 43, carb: 0, fat: 14 } ],
+        [ { name: '午餐 150g 龙利鱼', kcal: 132, protein: 22, carb: 0, fat: 2 }, { name: '晚餐 200g 芋头', kcal: 224, protein: 4, carb: 44, fat: 0 }, { name: '晚餐 100g 瘦猪肉', kcal: 143, protein: 21, carb: 0, fat: 5 } ],
+        [ { name: '午餐 100g 瘦猪肉', kcal: 143, protein: 21, carb: 0, fat: 5 }, { name: '晚餐 200g 紫薯', kcal: 172, protein: 6, carb: 40, fat: 0 }, { name: '晚餐 100g 瘦牛肉', kcal: 250, protein: 26, carb: 0, fat: 10 } ],
+        [ { name: '午餐 2 个去皮鸡腿', kcal: 324, protein: 43, carb: 0, fat: 14 }, { name: '晚餐 200g 土豆', kcal: 154, protein: 4, carb: 34, fat: 0 }, { name: '晚餐 3 个白煮蛋', kcal: 465, protein: 18, carb: 1.5, fat: 15 } ],
+        [ { name: '午餐 150g 巴沙鱼', kcal: 132, protein: 22, carb: 0, fat: 2 }, { name: '晚餐 200g 红薯', kcal: 172, protein: 6, carb: 40, fat: 0 }, { name: '晚餐 100g 瘦牛肉', kcal: 250, protein: 26, carb: 0, fat: 10 } ]
       ];
 
       function getDayIntake(dayIndex) {
         var list = COMMON.concat(DAY_MEALS[dayIndex]);
-        var total = 0;
-        list.forEach(function(item) { total += item.kcal; });
-        return { items: list, total: total };
+        var total = 0, protein = 0, carb = 0, fat = 0;
+        list.forEach(function(item) {
+          total += item.kcal;
+          protein += item.protein || 0;
+          carb += item.carb || 0;
+          fat += item.fat || 0;
+        });
+        return { items: list, total: total, protein: Math.round(protein * 10) / 10, carb: Math.round(carb * 10) / 10, fat: Math.round(fat * 10) / 10 };
       }
 
       function renderExpenditure() {
@@ -244,11 +256,18 @@
         tbody.innerHTML = '';
         data.items.forEach(function(item) {
           var tr = document.createElement('tr');
-          tr.innerHTML = '<td>' + item.name + '</td><td class="col-price">' + item.kcal + '</td>';
+          var p = (item.protein != null) ? item.protein : '—';
+          var c = (item.carb != null) ? item.carb : '—';
+          var f = (item.fat != null) ? item.fat : '—';
+          tr.innerHTML = '<td>' + item.name + '</td><td class="col-num">' + item.kcal + '</td><td class="col-num">' + p + '</td><td class="col-num">' + c + '</td><td class="col-num">' + f + '</td>';
           tbody.appendChild(tr);
         });
         document.getElementById('intakeTotal').textContent = data.total;
+        document.getElementById('intakeProtein').textContent = data.protein;
+        document.getElementById('intakeCarb').textContent = data.carb;
+        document.getElementById('intakeFat').textContent = data.fat;
         renderBalance(data.total);
+        renderRecommendedMacros(data);
       }
 
       function renderBalance(intake) {
@@ -268,6 +287,37 @@
         else if (diff < 0) text += ' 当日赤字 <strong style="color:#34d399">' + diff + '</strong> kcal。';
         else text += ' 收支平衡。';
         el.innerHTML = text;
+      }
+
+      /** 按体重与 TDEE 计算推荐蛋白质/碳水/脂肪（g）：蛋白 1.6 g/kg，脂肪 25% 热量，碳水为剩余 */
+      function getRecommendedMacros() {
+        var weight = getLatestWeight();
+        var height = getHeight();
+        var age = getAgeForCalc();
+        var gender = getGender();
+        if (!weight || !height || !age) return null;
+        var tdee = Math.round(bmr(weight, height, age, gender) * getActivity());
+        var proteinG = Math.round(weight * 1.6 * 10) / 10;
+        var fatG = Math.round((tdee * 0.25 / 9) * 10) / 10;
+        var carbG = Math.round((tdee - proteinG * 4 - fatG * 9) / 4 * 10) / 10;
+        if (carbG < 0) carbG = 0;
+        return { tdee: tdee, protein: proteinG, carb: carbG, fat: fatG };
+      }
+
+      function renderRecommendedMacros(dayData) {
+        var el = document.getElementById('recommendedMacrosResult');
+        var compareEl = document.getElementById('macroCompareResult');
+        var rec = getRecommendedMacros();
+        if (!rec) {
+          el.textContent = '请先填写并保存身体数据（身高、体重、出生日期、性别、活动量）。';
+          compareEl.textContent = '';
+          return;
+        }
+        el.innerHTML = '按当前身体数据，每日总消耗约 <strong>' + rec.tdee + '</strong> kcal。推荐摄入：<strong>蛋白质 ' + rec.protein + ' g</strong>（1.6 g/kg）、<strong>碳水 ' + rec.carb + ' g</strong>、<strong>脂肪 ' + rec.fat + ' g</strong>（脂肪约占总热量 25%）。';
+        var p = dayData.protein, c = dayData.carb, f = dayData.fat;
+        var pd = (p - rec.protein).toFixed(1), cd = (c - rec.carb).toFixed(1), fd = (f - rec.fat).toFixed(1);
+        var line = '当日餐单：蛋白质 ' + p + ' g（' + (pd >= 0 ? '+' : '') + pd + '）、碳水 ' + c + ' g（' + (cd >= 0 ? '+' : '') + cd + '）、脂肪 ' + f + ' g（' + (fd >= 0 ? '+' : '') + fd + '）。';
+        compareEl.textContent = line;
       }
 
       var daySelect = document.getElementById('daySelect');
@@ -384,7 +434,9 @@
         if (window.FitUser) window.FitUser.saveWorkingToCurrentUser();
         updateAgeDisplay();
         renderExpenditure();
-        renderBalance(getDayIntake(parseInt(daySelect.value, 10)).total);
+        var dayData = getDayIntake(parseInt(daySelect.value, 10));
+        renderBalance(dayData.total);
+        renderRecommendedMacros(dayData);
       });
 
       daySelect.addEventListener('change', renderIntake);
