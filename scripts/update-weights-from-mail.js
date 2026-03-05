@@ -55,16 +55,26 @@ async function main() {
     }
   });
 
+  let accounts = await loadAccounts();
+  const accountEmails = new Set(accounts.map(a => normalizeEmail(a.email)));
+  let changed = false;
+
+  // Socket timeout 等会触发 error 事件而非 throw，必须监听否则进程直接退出
+  client.on('error', (err) => {
+    if (changed) {
+      console.warn('Connection error after update (data already saved):', err.message || err);
+    } else {
+      console.error(err);
+      process.exit(1);
+    }
+  });
+
   console.log('Connecting to IMAP...');
   await client.connect();
   await client.mailboxOpen('INBOX');
 
-  // 只处理最近 7 天的未读邮件，且只处理发件人在 accounts 中的邮件（避免扫整箱历史未读）
   const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
   const lock = await client.getMailboxLock('INBOX');
-  let accounts = await loadAccounts();
-  const accountEmails = new Set(accounts.map(a => normalizeEmail(a.email)));
-  let changed = false;
   try {
     for await (let msg of client.fetch({ seen: false, since }, { envelope: true, source: true })) {
       const fromAddr = msg.envelope.from && msg.envelope.from[0] && msg.envelope.from[0].address;
