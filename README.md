@@ -81,6 +81,19 @@ fit/
 - **通过邮件更新体重**：`scripts/update-weights-from-mail.js` 通过 IMAP 读取**未读**邮件，在正文中解析类似「今日体重：83.5kg」或「体重：83.5 kg」的文本，根据**发件人邮箱**匹配 `accounts.json` 中的账户并更新其 `weight`，然后将该邮件标为已读。
 - **回复或新邮件均可**：不区分是回复每日邮件还是新发一封邮件。只要发件人是 `accounts.json` 里配置的邮箱，且正文中有合法体重（如 `体重：83.5kg`），就会更新对应账户的体重。定时任务（如 GitHub Actions）跑完脚本后可将更新后的 `accounts.json` 自动提交回仓库。
 
+### 使用 Gmail（推荐在 GitHub Actions 上使用）
+
+国内邮箱（如 163）的 IMAP 在 GitHub 海外 runner 上常连不上（ETIMEDOUT），建议用 Gmail：
+
+1. **GitHub Secrets** 配置：
+   - `IMAP_HOST` = `imap.gmail.com`
+   - `IMAP_PORT` = `993`
+   - `IMAP_USER` = 你的 Gmail 地址（用于收体重邮件的那个邮箱）
+   - `IMAP_PASS` = **应用专用密码**（不是登录密码）：
+     - 先开启 [Google 两步验证](https://myaccount.google.com/signinoptions/two-step-verification)
+     - 再在 [应用密码](https://myaccount.google.com/apppasswords) 里生成一个「邮件」用密码，复制进 `IMAP_PASS`
+2. **accounts.json**：把里面的 `email` 改成对应的 **Gmail 地址**（谁发体重邮件，就填谁的 Gmail；发件人须在列表中才会更新）。
+
 ---
 
 ## 技术说明
