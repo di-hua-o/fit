@@ -9,6 +9,8 @@ on:
 jobs:
   update-weights:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # 允许 GITHUB_TOKEN 推送提交（否则 push 会 403）
     steps:
       - name: Checkout
         uses: actions/checkout@v4
