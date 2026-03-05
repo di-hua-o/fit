@@ -88,18 +88,31 @@ async function main() {
       console.log(`Update weight for ${email}: ${w} kg`);
       accounts[idx].weight = w;
       changed = true;
-      await client.messageFlagsAdd(msg.uid, ['\\Seen']);
+      saveAccounts(accounts); // 立即写入，避免后续 IMAP 超时时更新丢失
+      console.log('accounts.json updated.');
+      try {
+        await client.messageFlagsAdd(msg.uid, ['\\Seen']);
+      } catch (e) {
+        console.warn('Mark as read failed (ignored):', e.message || e);
+      }
+    }
+  } catch (e) {
+    if (changed) {
+      console.warn('Connection error after update (data already saved):', e.message || e);
+    } else {
+      throw e;
     }
   } finally {
     lock.release();
   }
 
-  await client.logout();
+  try {
+    await client.logout();
+  } catch (e) {
+    console.warn('Logout failed (ignored):', e.message || e);
+  }
 
-  if (changed) {
-    saveAccounts(accounts);
-    console.log('accounts.json updated.');
-  } else {
+  if (!changed) {
     console.log('No weight updates.');
   }
 }
