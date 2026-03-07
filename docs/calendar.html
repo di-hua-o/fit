@@ -121,7 +121,6 @@
       ];
       var COMMON = {
         water: '每日≥4L，晨起空腹500ml温水'
-        water: '每日≥4L，晨起空腹500ml温水'
       };
       var SUPPLEMENTS = [
         { name: '🐟 鱼油', dose: '2 粒', time: '早 1 粒、晚 1 粒' },
@@ -190,8 +189,10 @@
         var isWeekend = weekday === 0 || weekday === 6;
 
         var training;
-        if (weekday === 0 || weekday === 6) {
-          training = '有氧 + 无氧锻炼：每周两次（详细计划待补充）';
+        if (weekday === 6) {
+          training = '周六：无氧（胸/背/肩 4组×15次）+ 有氧 40 分钟爬楼机，详见锻炼计划页';
+        } else if (weekday === 0) {
+          training = '周日：无氧（大腿前/大腿后/屁股）+ 有氧 40 分钟爬楼机，详见锻炼计划页';
         } else if (weekday === 2 || weekday === 4) {
           training = '有氧训练：30 分钟爬楼梯（周二/周四安排）';
         } else {

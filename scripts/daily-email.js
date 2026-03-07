@@ -85,8 +85,10 @@ function buildPlan(offsetDays) {
   // 简要补充饮水与训练
   lines.push(`睡前加餐：${beforeBed}`);
   lines.push(`饮水：${COMMON.water}`);
-  if (weekday === 0 || weekday === 6) {
-    lines.push('训练：有氧 + 无氧锻炼（周末两次，详细计划见锻炼页）');
+  if (weekday === 6) {
+    lines.push('训练：周六 无氧（胸/背/肩 4组×15次）+ 有氧 40 分钟爬楼机，详见锻炼计划页');
+  } else if (weekday === 0) {
+    lines.push('训练：周日 无氧（大腿前/大腿后/屁股）+ 有氧 40 分钟爬楼机，详见锻炼计划页');
   } else if (weekday === 2 || weekday === 4) {
     lines.push('训练：30 分钟爬楼梯（周二/周四）');
   } else {
