@@ -4,13 +4,17 @@
     "gender": "男",
     "age": 27,
     "weight": 110.8,
-    "height": 183
+    "height": 183,
+    "bodyFat": 0.35,
+    "trainWeekend": 1
   },
   {
     "email": "15802150362@163.com",
     "gender": "女",
     "age": 30,
     "weight": 57,
-    "height": 158
+    "height": 158,
+    "bodyFat": 0.3,
+    "trainWeekend": 0
   }
 ]
